@@ -1,0 +1,3 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+EnergyModelsCO2 = "84b3f4d7-d799-4a5d-b06c-25c90dcfcad7"
