@@ -20,6 +20,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/sigmund.holm@sintef.no/EnergyModelsCO2.jl",
+    repo="gitlab.sintef.no/sigmund.holm/EnergyModelsCO2.jl",
     devbranch="master",
 )
