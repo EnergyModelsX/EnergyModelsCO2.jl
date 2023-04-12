@@ -6,8 +6,6 @@ Set all constraints for a `Storage`. Can serve as fallback option for all unspec
 subtypes of `Storage`.
 """
 function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
-    @info "Create CO2Storage $n"
-
     # 𝒫ᵃᵈᵈ   = setdiff(keys(n.Input), [CO2])
 
     # Constraint for additional required input.
@@ -16,7 +14,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
 
     p_stor = n.Stor_res
-    𝒫ᵉᵐ    = EMB.res_sub(𝒫, ResourceEmit)
+    # 𝒫ᵉᵐ    = EMB.res_sub(𝒫, ResourceEmit)
     𝒯ᴵⁿᵛ   = strategic_periods(𝒯)
 
     # Mass/energy balance constraints for stored energy carrier.

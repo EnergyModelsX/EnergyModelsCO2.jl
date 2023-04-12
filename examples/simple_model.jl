@@ -1,83 +1,58 @@
-# Install example dependency.
 using Pkg
-Pkg.add("PrettyTables")
-
-using HiGHS
-using JuMP
-using PrettyTables
+# Activate the test-environment, where PrettyTables and HiGHS are added as dependencies.
+Pkg.activate(joinpath(@__DIR__, "../test"))
+# Install the dependencies.
+Pkg.instantiate()
+# Add the package EnergyModelsInvestments to the environment.
+Pkg.develop(path=joinpath(@__DIR__, ".."))
 
 using EnergyModelsCO2
 using EnergyModelsBase
+using HiGHS
+using JuMP
+using PrettyTables
 using TimeStructures
 
+
 const EMB = EnergyModelsBase
-const TS = TimeStructures
+
+NG = ResourceEmit("NG", 0.3)
+CO2 = ResourceEmit("CO2", 1.)
+Power = ResourceCarrier("Power", 0.)
 
 
-NG = ResourceEmit("NG", 0.2)
-CO2 = ResourceEmit("CO2", 1.0)
-Power = ResourceCarrier("Power", 0.0)
-Coal = ResourceCarrier("Coal", 0.35)
-products = [NG, Power, CO2, Coal]
-𝒫ᵉᵐ₀ = Dict(k => FixedProfile(0) for k ∈ products if typeof(k) == ResourceEmit{Float64})
+products = [CO2]
+
+# Creation of a dictionary with entries of 0. for all resources
+𝒫₀ = Dict(k => 0 for k ∈ products)
+
+# Creation of a dictionary with entries of 0. for all emission resources
+𝒫ᵉᵐ₀ = Dict(k => 0.0 for k ∈ products if typeof(k) == ResourceEmit{Float64})
 
 
-function demo()
-    sp_dur = 5
+function small_graph()
 
-    products = [NG, Power, CO2, Coal]
-    # Create dictionary with entries of 0. for all resources
-    𝒫₀ = Dict(k => 0 for k ∈ products)
-    # Create dictionary with entries of 0. for all emission resources
-    𝒫ᵉᵐ₀ = Dict(k => 0.0 for k ∈ products if typeof(k) == ResourceEmit{Float64})
-    𝒫ᵉᵐ₀[CO2] = 0.0
+    ng_source = RefSource("ng", FixedProfile(9), FixedProfile(-3), FixedProfile(1),
+        Dict(CO2 => 1), Dict("" => EMB.EmptyData()), 𝒫ᵉᵐ₀)
 
-    source = RefSource(
-        "src",
-        FixedProfile(5),
-        FixedProfile(10),
-        FixedProfile(5),
-        Dict(Power => 1),
-        Dict("" => EmptyData()))
+    co2_storage = CO2Storage("co2", FixedProfile(10), FixedProfile(1000),
+        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(CO2=>1), Dict(""=>EmptyData()))
 
-    sink = RefSink(
-        "sink",
-        FixedProfile(20),
-        Dict(:Surplus => FixedProfile(0), :Deficit => FixedProfile(1e6)),
-        Dict(Power => 1))
-
-    stor = RefStorage("stor", FixedProfile(60), FixedProfile(600), FixedProfile(9.1),
-                            FixedProfile(0), Power, Dict(Power => 1), Dict(Power => 0.9),
-                            Dict("" => EmptyData()))
-
-    co2_stor = CO2Storage(
-        "co2",
-        # FixedProfile(0), # Cap
-        FixedProfile(1), # Rate_cap
-        FixedProfile(1000), # Stor_cap
-
-        FixedProfile(2), # Opex_var
-        FixedProfile(2), # Opex_fixed
-        CO2,
-        Dict(CO2=>1), # Input
-        Dict(CO2=>1), # Output
-        Dict("" => EmptyData())
-    )
-
-    nodes = [EMB.GenAvailability(1, 𝒫₀, 𝒫₀), source, sink, stor, co2_stor]
+    nodes = [GenAvailability(1, 𝒫₀, 𝒫₀), ng_source, co2_storage]
     links = [
-        EMB.Direct(21, nodes[2], nodes[1], EMB.Linear())
-        EMB.Direct(13, nodes[1], nodes[3], EMB.Linear())
-        EMB.Direct(14, nodes[1], nodes[4], EMB.Linear())
-        EMB.Direct(14, nodes[4], nodes[1], EMB.Linear())
-        EMB.Direct(15, nodes[1], nodes[5], EMB.Linear())
+        Direct("ng-av", ng_source, nodes[1])
+        Direct("av-co2", nodes[1], co2_storage)
+        Direct("co2-av", co2_storage, nodes[1])
+        # Direct("av-sink", nodes[1], co2_sink)
     ]
 
-    T = UniformTwoLevel(1, 2, sp_dur, UniformTimes(1, 4, 1))
-    em_limits =
-        Dict(NG => FixedProfile(1e6), CO2 => StrategicFixedProfile([450, 400, 350, 300]))
-    # em_cost = Dict(NG => FixedProfile(0), CO2 => FixedProfile(0))
-    model = OperationalModel(em_limits, CO2)
+    # Creation of the time structure and the used global data
+    T = UniformTwoLevel(1, 2, 1, UniformTimes(1, 3, 1))
+    modeltype = OperationalModel(
+        Dict(
+            CO2=>FixedProfile(3),
+            NG=>FixedProfile(3)),
+        CO2)
 
     case = Dict(
         :nodes => nodes,
@@ -85,39 +60,32 @@ function demo()
         :products => products,
         :T => T,
     )
-
-    # Create model and optimize
-    m = EMB.create_model(case, model)
-    optimizer = optimizer_with_attributes(HiGHS.Optimizer)
-    set_optimizer(m, optimizer)
-    optimize!(m)
-
-    # Display some results
-    pretty_table(
-        JuMP.Containers.rowtable(
-            value,
-            m[:stor_level];
-            header = [:Source, :OperationalPeriod, :stor_level],
-        ),
-    )
-
-    pretty_table(
-        JuMP.Containers.rowtable(
-            value,
-            m[:flow_in];
-            header = [:Source, :OperationalPeriod, :Prod, :flow_in],
-        ),
-    )
-    pretty_table(
-        JuMP.Containers.rowtable(
-            value,
-            m[:flow_out];
-            header = [:Source, :OperationalPeriod, :Prod, :flow_out],
-        ),
-    )
+    return case, modeltype
 end
 
 
+case, modeltype = small_graph()
+m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
 
-m = demo()
-# print(m)
+# Display some results
+pretty_table(
+    JuMP.Containers.rowtable(
+        value,
+        m[:stor_level];
+        header = [:Source, :OperationalPeriod, :stor_level],
+    ),
+)
+
+pretty_table(sort(filter(x->x.product == CO2, JuMP.Containers.rowtable(
+        value,
+        m[:flow_in];
+        header = [:node, :tp, :product, :flow_in],
+    )), by = x->x.tp)
+)
+
+pretty_table(sort(filter(x->x.product == CO2, JuMP.Containers.rowtable(
+        value,
+        m[:flow_out];
+        header = [:node, :tp, :product, :flow_out],
+    )), by = x->x.tp)
+)
