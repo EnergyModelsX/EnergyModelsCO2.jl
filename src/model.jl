@@ -22,23 +22,30 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     # Mass/energy balance constraints for stored energy carrier.
     for t_inv ∈ 𝒯ᴵⁿᵛ, t ∈ t_inv
         if t == first_operational(t_inv)
-            @constraint(m,
-                m[:stor_level][n, t] ==  (m[:flow_in][n, t , p_stor] -
-                                          - m[:flow_out][n, t, p_stor]
-                                          - m[:emissions_node][n, t, p_stor]) * 
-                                            t.duration
+            if isfirst(t_inv)
+                @constraint(m,
+                    m[:stor_level][n, t] ==  (m[:flow_in][n, t , p_stor] -
+                                            - m[:flow_out][n, t, p_stor]) * 
+                                                duration(t)
                 )
+            else
+                previous_operational = last_operational(previous(t_inv, 𝒯))
+                @constraint(m,
+                    m[:stor_level][n, t] ==  m[:stor_level][n, previous_operational] + 
+                                                (m[:flow_in][n, t , p_stor] 
+                                                - m[:flow_out][n, t, p_stor]) * 
+                                                duration(t)
+                )
+            end
         else
             @constraint(m,
                 m[:stor_level][n, t] ==  m[:stor_level][n, previous(t, 𝒯)] + 
                                             (m[:flow_in][n, t , p_stor] 
-                                            - m[:flow_out][n, t, p_stor]
-                                            - m[:emissions_node][n, t, p_stor]) * 
-                                            t.duration
-                )
+                                            - m[:flow_out][n, t, p_stor]) * 
+                                            duration(t)
+            )
         end
     end
-    #  @constraint(m, [t ∈ 𝒯], m[:stor_level][n, t] == 0)
     
     # Constraint for the other emissions to avoid problems with unconstrained variables.
     @constraint(m, [t ∈ 𝒯, p_em ∈ keys(n.Output)],

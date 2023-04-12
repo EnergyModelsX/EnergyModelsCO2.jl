@@ -42,7 +42,7 @@ function small_graph()
     ]
 
     # Creation of the time structure and the used global data
-    T = UniformTwoLevel(1, 1, 1, UniformTimes(1, 3, 1))
+    T = UniformTwoLevel(1, 2, 1, UniformTimes(1, 3, 1))
     modeltype = OperationalModel(
         Dict(
             CO2=>FixedProfile(3),
