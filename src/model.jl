@@ -8,7 +8,7 @@ subtypes of `Storage`.
 function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
     p_stor = n.Stor_res
-    # 𝒫ᵉᵐ    = EMB.res_sub(𝒫, ResourceEmit)
+    𝒫ᵉᵐ    = EMB.res_sub(𝒫, ResourceEmit)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
 
     # Mass/energy balance constraints for stored energy carrier.
@@ -52,7 +52,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     end
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(m, [t ∈ 𝒯, p_em ∈ keys(n.Output)],
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
         m[:emissions_node][n, t, p_em] == 0)
 
     # The sink has no outputs.
