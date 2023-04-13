@@ -32,5 +32,23 @@ struct CO2Storage <: Storage
     Data::Dict{Any, Data}
 end
 
-# TODO Lag constructor som setter alt i Output til null av default.
-# CO2Storage(Cap, Penalty, ...) = CO2Storage
+"""
+    CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Data)
+
+Constructor for the struct CO2Storage
+
+# Fields
+- **`id`** is the name/identifyer of the node.\n
+- **`Rate_cap::TimeProfile`** is the installed rate capacity, that is e.g. power or mass flow.\n
+- **`Stor_cap::TimeProfile`** is the installed storage capacity, that is e.g. energy or mass.\n
+- **`Opex_var::TimeProfile`** is the variational operational costs per energy unit produced.\n
+- **`Opex_fixed::TimeProfile`** is the fixed operational costs.\n
+- **`Stor_res::Resource`** is the stored `Resource`.\n
+- **`Input::Dict{Resource, Real}`** are the input `Resource`s with conversion value `Real`.
+- **`Data::Dict{String, Data}`** is the additional data (e.g. for investments).
+
+Sets the field `Output` to a defualt value.
+"""
+function CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Data)
+    CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Dict(Stor_res=>1), Data)
+end

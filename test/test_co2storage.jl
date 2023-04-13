@@ -25,7 +25,7 @@ function small_graph(T)
         Dict(CO2 => 1), Dict("" => EMB.EmptyData()), 𝒫ᵉᵐ₀)
 
     co2_storage = CO2Storage("co2", FixedProfile(10), FixedProfile(2000),
-        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(CO2=>1), Dict(""=>EmptyData()))
+        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(""=>EmptyData()))
 
     nodes = [GenAvailability(1, 𝒫₀, 𝒫₀), ng_source, co2_storage]
     links = [
