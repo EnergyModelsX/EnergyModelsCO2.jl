@@ -28,7 +28,15 @@ before_script:
   script:
     - echo "Run tests"
     - julia -e 'using Pkg; Pkg.Registry.status()'
-    - julia --project=. -e 'using Pkg; Pkg.test(; coverage = true)'
+    - julia --project=. -e 'using Pkg; Pkg.test(; coverage = true);
+        Pkg.add("Coverage");
+        Pkg.instantiate();
+        using Coverage;
+        processed = process_folder();
+        covered_lines, total_lines = get_summary(processed);
+        percentage = covered_lines / total_lines * 100;
+        return println("Code coverage $(percentage)%")'
+  coverage: '/Code coverage \d+\.\d+/'
 
 
 test:1.8:
