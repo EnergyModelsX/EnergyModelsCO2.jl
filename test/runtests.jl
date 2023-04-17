@@ -1,6 +1,6 @@
-using EnergyModelsCO2
 using Test
 
-@testset "EnergyModelsCO2.jl" begin
-    # Write your tests here.
+@testset "EnergyModelsCO2" begin
+    include("test_co2storage.jl")
+    include("test_examples.jl")
 end
