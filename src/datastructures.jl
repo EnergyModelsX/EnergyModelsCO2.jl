@@ -35,7 +35,7 @@ end
 """
     CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Data)
 
-Constructor for the struct CO2Storage
+Constructor for the struct `CO2Storage`.
 
 # Fields
 - **`id`** is the name/identifyer of the node.\n
@@ -47,7 +47,7 @@ Constructor for the struct CO2Storage
 - **`Input::Dict{Resource, Real}`** are the input `Resource`s with conversion value `Real`.
 - **`Data::Dict{String, Data}`** is the additional data (e.g. for investments).
 
-Sets the field `Output` to a defualt value.
+Sets the field `Output` to the defualt value `Dict(Stor_res=>1)`. 
 """
 function CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Data)
     CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Dict(Stor_res=>1), Data)
