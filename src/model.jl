@@ -12,10 +12,9 @@ function EMB.variables_node(m, 𝒩::Vector{CO2Storage}, 𝒯, modeltype::Energy
 end
 
 """
-    create_node(m, n::Storage, 𝒯, 𝒫, modeltype::EnergyModel)
+    create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
-Set all constraints for a `Storage`. Can serve as fallback option for all unspecified
-subtypes of `Storage`.
+Set all constraints for a `CO2Storage`.
 """
 function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
