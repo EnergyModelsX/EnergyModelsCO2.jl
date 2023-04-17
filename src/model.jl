@@ -24,7 +24,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
 
     # Mass/energy balance constraints for stored energy carrier.
-    for t_inv ∈ 𝒯ᴵⁿᵛ, t ∈ t_inv
+    for t_inv ∈ 𝒯ᴵⁿᵛ
 
         # Increase in stor_level during this strategic period.
         @constraint(m,
@@ -36,37 +36,39 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
                 m[:flow_in][n, first_operational(t_inv), p_stor])
         )
 
-        if t == first_operational(t_inv)
-            if isfirst(t_inv)
-                @constraint(m,
-                    m[:stor_level][n, t] == m[:flow_in][n, t, p_stor] * duration(t)
-                )
-            else
-                # Previous strategic period.
-                t_inv_1 = previous(t_inv, 𝒯)
+        for t ∈ t_inv
+            if t == first_operational(t_inv)
+                if isfirst(t_inv)
+                    @constraint(m,
+                        m[:stor_level][n, t] == m[:flow_in][n, t, p_stor] * duration(t)
+                    )
+                else
+                    # Previous strategic period.
+                    t_inv_1 = previous(t_inv, 𝒯)
 
+                    @constraint(m,
+                        m[:stor_level][n, t] == (
+                            # Initial storage in previous sp
+                            m[:stor_level][n, first_operational(t_inv_1)] -
+                            m[:flow_in][n, first_operational(t_inv_1), p_stor] +
+                            # Increase in stor_level during previous strateic period.
+                            m[:stor_usage_sp][n, t_inv_1] * duration(t_inv_1) +
+                            # Net increased stor_level in this strategic period.
+                            (m[:flow_in][n, t, p_stor]
+                            -
+                            m[:flow_out][n, t, p_stor]) *
+                            duration(t))
+                    )
+                end
+            else
                 @constraint(m,
                     m[:stor_level][n, t] == (
-                        # Initial storage in previous sp
-                        m[:stor_level][n, first_operational(t_inv_1)] -
-                        m[:flow_in][n, first_operational(t_inv_1), p_stor] +
-                        # Increase in stor_level during previous strateic period.
-                        m[:stor_usage_sp][n, t_inv_1] * duration(t_inv_1) +
-                        # Net increased stor_level in this strategic period.
-                        (m[:flow_in][n, t, p_stor]
-                         -
-                         m[:flow_out][n, t, p_stor]) *
-                        duration(t))
+                        m[:stor_level][n, previous(t, 𝒯)]
+                        +
+                        m[:flow_in][n, t, p_stor]
+                    ) * duration(t)
                 )
             end
-        else
-            @constraint(m,
-                m[:stor_level][n, t] == (
-                    m[:stor_level][n, previous(t, 𝒯)]
-                    +
-                    m[:flow_in][n, t, p_stor]
-                ) * duration(t)
-            )
         end
     end
 
