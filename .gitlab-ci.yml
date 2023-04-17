@@ -1,3 +1,8 @@
+stages:
+  - test
+  - deploy
+
+
 before_script:
   # Install git.
   - apt-get update -qq && apt-get install -y git
@@ -25,6 +30,7 @@ before_script:
 
 # Below is the template to run the tests in Julia
 .test_template: &test_definition
+  stage: test
   script:
     - echo "Run tests"
     - julia -e 'using Pkg; Pkg.Registry.status()'
@@ -73,7 +79,7 @@ register:
     - git config --global user.name "Registrator"
     - julia --project="test" -e 'using Pkg; Pkg.instantiate()'  # install dependencies.
     # Register the package. LocalRegistry will not register a new version if it is already registered.
-    - julia --project="test" -e 'using LocalRegistry; register()'  # register the package
+    - julia --project="test" -e 'using LocalRegistry; register(repo=ENV["CI_PROJECT_URL"], create_gitlab_mr=true)'
   rules:
     # Only execute this on the default branch.
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
