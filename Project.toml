@@ -1,7 +1,7 @@
 name = "EnergyModelsCO2"
 uuid = "84b3f4d7-d799-4a5d-b06c-25c90dcfcad7"
 authors = ["Sigmund Eggen Holm <sigmund.holm@sintef.no> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 EnergyModelsBase = "5d7e687e-f956-46f3-9045-6f5a5fd49f50"
