@@ -50,7 +50,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
                             # Initial storage in previous sp
                             m[:stor_level][n, first_operational(t_inv_1)] -
                             m[:flow_in][n, first_operational(t_inv_1), p_stor] +
-                            # Increase in stor_level during previous strateic period.
+                            # Increase in stor_level during previous strategic period.
                             m[:stor_usage_sp][n, t_inv_1] * duration(t_inv_1) +
                             # Net increased stor_level in this strategic period.
                             (m[:flow_in][n, t, p_stor]
@@ -61,11 +61,10 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
                 end
             else
                 @constraint(m,
-                    m[:stor_level][n, t] == (
+                    m[:stor_level][n, t] == 
                         m[:stor_level][n, previous(t, 𝒯)]
                         +
-                        m[:flow_in][n, t, p_stor]
-                    ) * duration(t)
+                        m[:flow_in][n, t, p_stor] * duration(t)
                 )
             end
         end

@@ -50,7 +50,7 @@ end
 
 @testset "CO2 source and storage" begin
     # Creation of the time structure
-    T = UniformTwoLevel(1, 2, 1, UniformTimes(1, 3, 1))
+    T = UniformTwoLevel(1, 2, 1, UniformTimes(1, 3, 2))
    
     case, modeltype = small_graph(T)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
@@ -65,16 +65,16 @@ end
         for t in t_inv
             if t == first_operational(t_inv)
                 if isfirst(t_inv)
-                    @test value(m[:stor_level][storage, t]) == value(m[:flow_out][source, t, CO2])
+                    @test value(m[:stor_level][storage, t]) == value(m[:flow_out][source, t, CO2])*duration(t)
                 else
                     prev = last_operational(previous(t_inv, T))
 
                     @test value(m[:stor_level][storage, prev]) + 
-                        value(m[:flow_out][source, t, CO2]) == value(m[:stor_level][storage, t])
+                        value(m[:flow_out][source, t, CO2])*duration(t) == value(m[:stor_level][storage, t])
                 end
             else
                 @test value(m[:stor_level][storage, previous(t, T)]) + 
-                    value(m[:flow_out][source, t, CO2]) == value(m[:stor_level][storage, t])
+                    value(m[:flow_out][source, t, CO2])*duration(t) == value(m[:stor_level][storage, t])
             end
         end
     end
