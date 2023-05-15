@@ -1,5 +1,9 @@
 # Changelog
 
+Version 0.1.2 (2023-05-15)
+--------------------------
+ * Adjustment to changes in `EnergyModelsBase` v0.3.3 related to the calls for the constraint functions
+
 Version 0.1.1 (2023-04)
 --------------------------
 * Bugfix on storage level in operational periods.

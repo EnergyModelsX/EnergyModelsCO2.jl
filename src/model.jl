@@ -79,16 +79,16 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
         m[:flow_out][n, t, p] == 0)
 
     # Constraint for storage rate use, and use of additional required input resources.
-    EMB.constraints_flow_in(m, n, 𝒯)
+    EMB.constraints_flow_in(m, n, 𝒯, modeltype)
 
     # Bounds for the storage level and storage rate used.
-    EMB.constraints_capacity(m, n, 𝒯)
+    EMB.constraints_capacity(m, n, 𝒯, modeltype)
 
     # The fixed OPEX should depend on the injection rate capacity.
     @constraint(m, [t_inv ∈ 𝒯ᴵⁿᵛ],
         m[:opex_fixed][n, t_inv] == n.Opex_fixed[t_inv] * m[:stor_rate_inst][n, first(t_inv)]
     )
 
-    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ)
+    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
 
 end
