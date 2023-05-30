@@ -33,10 +33,10 @@ products = [CO2]
 function small_graph()
 
     ng_source = RefSource("ng", FixedProfile(9), FixedProfile(-3), FixedProfile(1),
-        Dict(CO2 => 1), Dict("" => EMB.EmptyData()), 𝒫ᵉᵐ₀)
+        Dict(CO2=>1), [], 𝒫ᵉᵐ₀)
 
     co2_storage = CO2Storage("co2", FixedProfile(10), FixedProfile(1000),
-        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(CO2=>1), Dict(""=>EmptyData()))
+        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(CO2=>1), [])
 
     nodes = [GenAvailability(1, 𝒫₀, 𝒫₀), ng_source, co2_storage]
     links = [
