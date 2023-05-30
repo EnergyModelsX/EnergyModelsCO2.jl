@@ -22,10 +22,10 @@ function small_graph(T)
     𝒫ᵉᵐ₀ = Dict(k => 0.0 for k ∈ products if typeof(k) == ResourceEmit{Float64})
 
     ng_source = RefSource("ng", FixedProfile(9), FixedProfile(-3), FixedProfile(1),
-        Dict(CO2 => 1), Dict("" => EMB.EmptyData()), 𝒫ᵉᵐ₀)
+        Dict(CO2=>1), [], 𝒫ᵉᵐ₀)
 
     co2_storage = CO2Storage("co2", FixedProfile(10), FixedProfile(2000),
-        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), Dict(""=>EmptyData()))
+        FixedProfile(2), FixedProfile(1), CO2, Dict(CO2=>1), [])
 
     nodes = [GenAvailability(1, 𝒫₀, 𝒫₀), ng_source, co2_storage]
     links = [
