@@ -1,4 +1,4 @@
-# [Public interface](@id sec_lib_internal)
+# [Internals](@id sec_lib_internal)
 
 
 ```@autodocs

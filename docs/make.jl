@@ -1,16 +1,16 @@
-using Pkg
-Pkg.develop(path="..")
-using EnergyModelsCO2
 using Documenter
+using EnergyModelsCO2
+
 
 DocMeta.setdocmeta!(EnergyModelsCO2, :DocTestSetup, :(using EnergyModelsCO2); recursive=true)
 
 # Copy the NEWS.md file
-news = "src/manual/NEWS.md"
-if isfile(news)
-    rm(news)
+BASE_PATH = joinpath(splitpath(@__DIR__)[1:end - 1])
+news_cp_path = joinpath(BASE_PATH, "docs/src/manual/NEWS.md")
+if isfile(news_cp_path)
+    rm(news_cp_path)
 end
-cp("../NEWS.md", "src/manual/NEWS.md")
+cp(joinpath(BASE_PATH, "NEWS.md"), news_cp_path)
 
 makedocs(;
     modules=[EnergyModelsCO2],
