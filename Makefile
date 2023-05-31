@@ -11,7 +11,8 @@ format:  ## Format all julia files.
 		Pkg.add("JuliaFormatter"); \
 		using JuliaFormatter; \
 		format("./src"); \
-		format("./test");'
+		format("./test"); \
+		format("./docs");'
 
 .PHONY: test
 test:  ## Run the tests

@@ -30,7 +30,7 @@ next sp is set.
  - **`Data::Array{Data}`** is the additional data (e.g. for investments).
 """
 struct CO2Storage <: Storage
-    id
+    id::Any
 
     Rate_cap::TimeProfile
     Stor_cap::TimeProfile
@@ -40,8 +40,8 @@ struct CO2Storage <: Storage
 
     Stor_res::ResourceEmit
     # Stor_res::ResourceCarrier get from global_data.CO2
-    Input::Dict{Resource, Real}
-    Output::Dict{Resource, Real}
+    Input::Dict{Resource,Real}
+    Output::Dict{Resource,Real}
     Data::Array{Data}
 end
 
@@ -63,5 +63,15 @@ Sets the field `Output` to the default value `Dict(Stor_res=>1)`.
 - **`Data::Dict{String, Data}`** is the additional data (e.g. for investments).
 """
 function CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Data)
-    CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Input, Dict(Stor_res=>1), Data)
+    return CO2Storage(
+        id,
+        Rate_cap,
+        Stor_cap,
+        Opex_var,
+        Opex_fixed,
+        Stor_res,
+        Input,
+        Dict(Stor_res => 1),
+        Data,
+    )
 end

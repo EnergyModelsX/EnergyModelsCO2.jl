@@ -20,7 +20,6 @@ end
 Set all constraints for a `CO2Storage`.
 """
 function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
-
     p_stor = n.Stor_res
     𝒫ᵉᵐ = EMB.res_sub(𝒫, ResourceEmit)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
@@ -29,26 +28,28 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     for t_inv ∈ 𝒯ᴵⁿᵛ
 
         # Increase in stor_level during this strategic period.
-        @constraint(m,
+        @constraint(
+            m,
             m[:stor_usage_sp][n, t_inv] == (
-                m[:stor_level][n, last_operational(t_inv)]
-                -
-                m[:stor_level][n, first_operational(t_inv)]
-                +
-                m[:flow_in][n, first_operational(t_inv), p_stor])
+                m[:stor_level][n, last_operational(t_inv)] -
+                m[:stor_level][n, first_operational(t_inv)] +
+                m[:flow_in][n, first_operational(t_inv), p_stor]
+            )
         )
 
         for t ∈ t_inv
             if t == first_operational(t_inv)
                 if isfirst(t_inv)
-                    @constraint(m,
+                    @constraint(
+                        m,
                         m[:stor_level][n, t] == m[:flow_in][n, t, p_stor] * duration(t)
                     )
                 else
                     # Previous strategic period.
                     t_inv_1 = previous(t_inv, 𝒯)
 
-                    @constraint(m,
+                    @constraint(
+                        m,
                         m[:stor_level][n, t] == (
                             # Initial storage in previous sp
                             m[:stor_level][n, first_operational(t_inv_1)] -
@@ -56,30 +57,27 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
                             # Increase in stor_level during previous strategic period.
                             m[:stor_usage_sp][n, t_inv_1] * duration(t_inv_1) +
                             # Net increased stor_level in this strategic period.
-                            (m[:flow_in][n, t, p_stor]
-                            -
-                            m[:flow_out][n, t, p_stor]) *
-                            duration(t))
+                            (m[:flow_in][n, t, p_stor] - m[:flow_out][n, t, p_stor]) *
+                            duration(t)
+                        )
                     )
                 end
             else
-                @constraint(m,
-                    m[:stor_level][n, t] == 
-                        m[:stor_level][n, previous(t, 𝒯)]
-                        +
-                        m[:flow_in][n, t, p_stor] * duration(t)
+                @constraint(
+                    m,
+                    m[:stor_level][n, t] ==
+                    m[:stor_level][n, previous(t, 𝒯)] +
+                    m[:flow_in][n, t, p_stor] * duration(t)
                 )
             end
         end
     end
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == 0)
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ], m[:emissions_node][n, t, p_em] == 0)
 
     # The CO2Storage has no outputs.
-    @constraint(m, [t ∈ 𝒯, p ∈ keys(n.Output)],
-        m[:flow_out][n, t, p] == 0)
+    @constraint(m, [t ∈ 𝒯, p ∈ keys(n.Output)], m[:flow_out][n, t, p] == 0)
 
     # Constraint for storage rate use, and use of additional required input resources.
     EMB.constraints_flow_in(m, n, 𝒯, modeltype)
@@ -88,10 +86,12 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     EMB.constraints_capacity(m, n, 𝒯, modeltype)
 
     # The fixed OPEX should depend on the injection rate capacity.
-    @constraint(m, [t_inv ∈ 𝒯ᴵⁿᵛ],
-        m[:opex_fixed][n, t_inv] == n.Opex_fixed[t_inv] * m[:stor_rate_inst][n, first(t_inv)]
+    @constraint(
+        m,
+        [t_inv ∈ 𝒯ᴵⁿᵛ],
+        m[:opex_fixed][n, t_inv] ==
+        n.Opex_fixed[t_inv] * m[:stor_rate_inst][n, first(t_inv)]
     )
 
-    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
-
+    return EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
 end
