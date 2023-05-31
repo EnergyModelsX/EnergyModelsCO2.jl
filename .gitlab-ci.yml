@@ -43,6 +43,8 @@ before_script:
         percentage = covered_lines / total_lines * 100;
         return println("Code coverage $(percentage)%")'
   coverage: '/Code coverage \d+\.\d+/'
+  rules:
+    - when: always
 
 
 test:1.9:
@@ -65,7 +67,7 @@ pages:
     paths:
       - public
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 
 # Register version

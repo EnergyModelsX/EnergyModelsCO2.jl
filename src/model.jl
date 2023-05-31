@@ -3,7 +3,10 @@
     EMB.variables_node(m, 𝒩::Vector{CO2Storage}, 𝒯, modeltype::EnergyModel)
 
 Create the optimization variable `:stor_usage_sp` for every CO2Storage node.
-This method is called from `EnergyModelsBase.jl`."""
+This variable accounts the increase in `stor_level` during a strategic period.
+
+This method is called from `EnergyModelsBase.jl`.
+"""
 function EMB.variables_node(m, 𝒩::Vector{CO2Storage}, 𝒯, modeltype::EnergyModel)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
     # Variable for keeping track of the increased storage_level during a

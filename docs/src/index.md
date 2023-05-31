@@ -11,6 +11,15 @@ Documentation for [EnergyModelsCO2](https://gitlab.sintef.no/clean_export/Energy
 EnergyModelsCO2
 ```
 
+This package depends on
+[EnergyModelsBase](https://clean_export.pages.sintef.no/energymodelsbase.jl/)
+and [TimeStructures](https://clean_export.pages.sintef.no/timestructures.jl/),
+and implements a new technology node [`CO2Storage`](@ref) representing a
+CO₂-storage. The main difference from a regular `Storage`-node is that the
+`CO2Storage` will not reset the storage level at the beginning of each strategic
+period, but the level will accumulate across the strategic periods.
+
+
 ## Manual outline
 ```@contents
 Pages = [
