@@ -25,37 +25,32 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
 
     # Mass/energy balance constraints for stored energy carrier.
-    for t_inv ∈ 𝒯ᴵⁿᵛ
-
+    for (t_inv_prev, t_inv) ∈ withprev(𝒯ᴵⁿᵛ)
         # Increase in stor_level during this strategic period.
         @constraint(
             m,
             m[:stor_usage_sp][n, t_inv] == (
-                m[:stor_level][n, last_operational(t_inv)] -
-                m[:stor_level][n, first_operational(t_inv)] +
-                m[:flow_in][n, first_operational(t_inv), p_stor]
+                m[:stor_level][n, last(t_inv)] - m[:stor_level][n, first(t_inv)] +
+                m[:flow_in][n, first(t_inv), p_stor]
             )
         )
 
-        for t ∈ t_inv
-            if t == first_operational(t_inv)
-                if isfirst(t_inv)
+        for (t_prev, t) ∈ withprev(t_inv)
+            if isnothing(t_prev)
+                if isnothing(t_inv_prev)
                     @constraint(
                         m,
                         m[:stor_level][n, t] == m[:flow_in][n, t, p_stor] * duration(t)
                     )
                 else
-                    # Previous strategic period.
-                    t_inv_1 = previous(t_inv, 𝒯)
-
                     @constraint(
                         m,
                         m[:stor_level][n, t] == (
                             # Initial storage in previous sp
-                            m[:stor_level][n, first_operational(t_inv_1)] -
-                            m[:flow_in][n, first_operational(t_inv_1), p_stor] +
+                            m[:stor_level][n, first(t_inv_prev)] -
+                            m[:flow_in][n, first(t_inv_prev), p_stor] +
                             # Increase in stor_level during previous strategic period.
-                            m[:stor_usage_sp][n, t_inv_1] * duration(t_inv_1) +
+                            m[:stor_usage_sp][n, t_inv_prev] * duration(t_inv_prev) +
                             # Net increased stor_level in this strategic period.
                             (m[:flow_in][n, t, p_stor] - m[:flow_out][n, t, p_stor]) *
                             duration(t)
@@ -66,8 +61,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
                 @constraint(
                     m,
                     m[:stor_level][n, t] ==
-                    m[:stor_level][n, previous(t, 𝒯)] +
-                    m[:flow_in][n, t, p_stor] * duration(t)
+                    m[:stor_level][n, t_prev] + m[:flow_in][n, t, p_stor] * duration(t)
                 )
             end
         end
