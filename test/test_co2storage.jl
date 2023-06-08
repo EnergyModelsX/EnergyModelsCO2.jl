@@ -3,7 +3,7 @@ using EnergyModelsBase
 using HiGHS
 using JuMP
 using Test
-using TimeStructures
+using TimeStruct
 
 const EMB = EnergyModelsBase
 
@@ -54,7 +54,7 @@ end
 
 @testset "CO2 source and storage" begin
     # Creation of the time structure
-    T = UniformTwoLevel(1, 2, 1, UniformTimes(1, 3, 2))
+    T = TwoLevel(2, 1, SimpleTimes(3, 2))
 
     case, modeltype = small_graph(T)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
@@ -65,21 +65,21 @@ end
     source = nodes[2]
     storage = nodes[3]
 
-    for t_inv ∈ strategic_periods(T)
-        for t ∈ t_inv
-            if t == first_operational(t_inv)
-                if isfirst(t_inv)
+    for (t_inv_prev, t_inv) ∈ withprev(strategic_periods(T))
+        for (t_prev, t) ∈ withprev(t_inv)
+            if isnothing(t_prev)
+                if isnothing(t_inv_prev)
                     @test value(m[:stor_level][storage, t]) ==
                           value(m[:flow_out][source, t, CO2]) * duration(t)
                 else
-                    prev = last_operational(previous(t_inv, T))
+                    prev = last(t_inv_prev)
 
                     @test value(m[:stor_level][storage, prev]) +
                           value(m[:flow_out][source, t, CO2]) * duration(t) ==
                           value(m[:stor_level][storage, t])
                 end
             else
-                @test value(m[:stor_level][storage, previous(t, T)]) +
+                @test value(m[:stor_level][storage, t_prev]) +
                       value(m[:flow_out][source, t, CO2]) * duration(t) ==
                       value(m[:stor_level][storage, t])
             end
@@ -96,7 +96,7 @@ end
     sp_length = 3
     op_length = 4
     source_cap = 9
-    T = UniformTwoLevel(1, 4, sp_length, UniformTimes(1, op_length, 1))
+    T = TwoLevel(4, sp_length, SimpleTimes(op_length, 1))
 
     case, modeltype = small_graph(T)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
@@ -108,12 +108,12 @@ end
     storage = nodes[3]
 
     for (i, t_inv) ∈ enumerate(strategic_periods(T))
-        for t ∈ t_inv
-            if t == first_operational(t_inv)
+        for (t_prev, t) ∈ withprev(t_inv)
+            if isnothing(t_prev)
                 @test value(m[:stor_level][storage, t]) ==
                       sp_length * op_length * source_cap * (i - 1) + source_cap
             else
-                @test value(m[:stor_level][storage, previous(t, T)]) +
+                @test value(m[:stor_level][storage, t_prev]) +
                       value(m[:flow_out][source, t, CO2]) ==
                       value(m[:stor_level][storage, t])
             end

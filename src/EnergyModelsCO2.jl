@@ -5,10 +5,10 @@ module EnergyModelsCO2
 
 using EnergyModelsBase
 using JuMP
-using TimeStructures
+using TimeStruct
 
 const EMB = EnergyModelsBase
-const TS = TimeStructures
+const TS = TimeStruct
 
 include("datastructures.jl")
 include("model.jl")

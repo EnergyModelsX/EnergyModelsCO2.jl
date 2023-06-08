@@ -1,6 +1,3 @@
-using EnergyModelsBase
-using TimeStructures
-
 """
     CO2Storage <: Storage
 
