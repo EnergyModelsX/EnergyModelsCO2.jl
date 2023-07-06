@@ -87,5 +87,5 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
         n.Opex_fixed[t_inv] * m[:stor_rate_inst][n, first(t_inv)]
     )
 
-    return EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
+    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
 end
