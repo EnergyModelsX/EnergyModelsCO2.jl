@@ -14,6 +14,6 @@ include("datastructures.jl")
 include("model.jl")
 include("checks.jl")
 
-export CO2Storage
+export CO2Storage, NetworkCCSRetrofit, CCSRetroFit
 
 end # module

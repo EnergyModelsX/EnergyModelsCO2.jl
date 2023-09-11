@@ -1,5 +1,5 @@
 
-""" 
+"""
     EMB.variables_node(m, 𝒩::Vector{CO2Storage}, 𝒯, modeltype::EnergyModel)
 
 Create the optimization variable `:stor_usage_sp` for every CO2Storage node.
@@ -10,7 +10,7 @@ This method is called from `EnergyModelsBase.jl`.
 function EMB.variables_node(m, 𝒩::Vector{CO2Storage}, 𝒯, modeltype::EnergyModel)
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
     # Variable for keeping track of the increased storage_level during a
-    # strategic period. 
+    # strategic period.
     @variable(m, stor_usage_sp[𝒩, 𝒯ᴵⁿᵛ] >= 0)
 end
 
@@ -87,5 +87,129 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
         n.Opex_fixed[t_inv] * m[:stor_rate_inst][n, first(t_inv)]
     )
 
+    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
+end
+
+"""
+    create_node(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype::EnergyModel)
+
+Set all constraints for a `NetworkCCSRetrofit`.
+"""
+function EMB.create_node(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype::EnergyModel)
+
+    # Declaration of the required subsets.
+    𝒫ⁱⁿ = collect(keys(n.Input))
+    𝒫ᵒᵘᵗ = collect(keys(n.Output))
+    𝒫ᵉᵐ = EMB.res_sub(𝒫, ResourceEmit)
+    CO2 = modeltype.CO2_instance
+    CO2_proxy = n.CO2_proxy
+    𝒯ᴵⁿᵛ = TS.strategic_periods(𝒯)
+
+    # Call of the function for the inlet flow to and outlet flow from the `Network` node
+    EMB.constraints_flow_in(m, n, 𝒯, modeltype)
+
+    # Calculate the total amount of CO2
+    tot_CO2 = @expression(
+        m,
+        [t ∈ 𝒯],
+        sum(p.CO2_int * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ) +
+        m[:cap_use][n, t] * n.Emissions[CO2]
+    )
+
+    # Constraint for the emissions associated to energy usage
+    @constraint(
+        m,
+        [t ∈ 𝒯],
+        m[:emissions_node][n, t, CO2] == (1 - n.CO2_capture) * tot_CO2[t]
+    )
+
+    # Constraint for the other emissions to avoid problems with unconstrained variables.
+    @constraint(
+        m,
+        [t ∈ 𝒯, p_em ∈ EMB.res_not(𝒫ᵉᵐ, CO2)],
+        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * n.Emissions[p_em]
+    )
+
+    # CO2 proxy outlet constraint
+    @constraint(m, [t ∈ 𝒯], m[:flow_out][n, t, CO2_proxy] == n.CO2_capture * tot_CO2[t])
+
+    # Outlet constraints for all other resources
+    @constraint(
+        m,
+        [t ∈ 𝒯, p ∈ EMB.res_not(𝒫ᵒᵘᵗ, CO2_proxy)],
+        m[:flow_out][n, t, p] == m[:cap_use][n, t] * n.Output[p]
+    )
+
+    # Call of the function for limiting the capacity to the maximum installed capacity
+    EMB.constraints_capacity(m, n, 𝒯, modeltype)
+
+    # Call of the functions for both fixed and variable OPEX constraints introduction
+    EMB.constraints_opex_fixed(m, n, 𝒯ᴵⁿᵛ, modeltype)
+    EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
+end
+
+"""
+    create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
+
+Set all constraints for a `CCSRetroFit`.
+"""
+function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
+    𝒫ⁱⁿ = collect(keys(n.Input))
+    𝒫ᵒᵘᵗ = collect(keys(n.Output))
+    𝒫ᵉᵐ = EMB.res_sub(𝒫, ResourceEmit)
+    CO2 = modeltype.CO2_instance
+    CO2_proxy = n.CO2_proxy
+    𝒯ᴵⁿᵛ = TS.strategic_periods(𝒯)
+
+    # Constraint for the other emissions to avoid problems with unconstrained variables.
+    @constraint(
+        m,
+        [t ∈ 𝒯, p_em ∈ EMB.res_not(𝒫ᵉᵐ, CO2)],
+        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * n.Emissions[p_em]
+    )
+
+    # CO2 balance in the capture unit
+    @constraint(
+        m,
+        [t ∈ 𝒯],
+        m[:emissions_node][n, t, CO2] ==
+        # All not captured CO2 proxy (i.e., sent to CCS sink) is emitted as CO2
+        m[:flow_in][n, t, CO2_proxy] - m[:cap_use][n, t] * n.CO2_capture +
+        # For other input products, CO2 intensity related emissions
+        sum(p.CO2_int * m[:flow_in][n, t, p] for p ∈ EMB.res_not(𝒫ⁱⁿ, CO2_proxy)) +
+        # Direct emissions of the node
+        m[:cap_use][n, t] * n.Emissions[CO2]
+    )
+
+    # CO2 proxy outlet constraint
+    @constraint(m, [t ∈ 𝒯], m[:flow_out][n, t, CO2] == n.CO2_capture * m[:cap_use][n, t])
+
+    # CO2 proxy outlet constraint for limiting the maximum CO2 captured
+    @constraint(
+        m,
+        [t ∈ 𝒯],
+        m[:flow_out][n, t, CO2] <= n.CO2_capture * m[:flow_in][n, t, CO2_proxy]
+    )
+
+    # Outlet constraints for all other resources
+    @constraint(
+        m,
+        [t ∈ 𝒯, p ∈ EMB.res_not(𝒫ᵒᵘᵗ, CO2)],
+        m[:flow_out][n, t, p] == m[:cap_use][n, t] * n.Output[p]
+    )
+
+    # Call of the function for the inlet flow to the `RefNetworkEmissions`
+    # All CO2_proxy input goes in, independently of cap_use
+    @constraint(
+        m,
+        [t ∈ 𝒯, p ∈ EMB.res_not(𝒫ⁱⁿ, CO2_proxy)],
+        m[:flow_in][n, t, p] == m[:cap_use][n, t] * n.Input[p]
+    )
+
+    # Call of the function for limiting the capacity to the maximum installed capacity
+    EMB.constraints_capacity(m, n, 𝒯, modeltype)
+
+    # Call of the functions for both fixed and variable OPEX constraints introduction
+    EMB.constraints_opex_fixed(m, n, 𝒯ᴵⁿᵛ, modeltype)
     EMB.constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
 end
