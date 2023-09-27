@@ -72,3 +72,70 @@ function CO2Storage(id, Rate_cap, Stor_cap, Opex_var, Opex_fixed, Stor_res, Inpu
         Data,
     )
 end
+
+"""
+    NetworkCCSRetrofit <: Network
+
+This node allows for retrofitting CCS to a `Network` node.
+
+It corresponds to a `RefNetwork` node in which the CO2 is not emitted. Instead, it is
+transferred to a `CO2_proxy` that is fed subsequently to a node in which it is either
+captured, or emitted.
+
+# Fields
+- **`id`** is the name/identifier of the node.\n
+- **`Cap::TimeProfile`** is the installed capacity.\n
+- **`Opex_var::TimeProfile`** is the variational operational costs per energy unit produced.\n
+- **`Opex_fixed::TimeProfile`** is the fixed operational costs.\n
+- **`Input::Dict{Resource, Real}`** are the input `Resource`s with conversion value `Real`.\n
+- **`Output::Dict{Resource, Real}`** are the generated `Resource`s with conversion value `Real`.
+CO2_proxy is required to be included to be available to have CO2 capture applied properly.\n
+- **`Emissions::Dict{ResourceEmit, Real}`**: emissions per unit produced.\n
+- **`CO2_capture::Real`** is the fraction of CO2 that is sent to the capture unit.\n
+- **`CO2_proxy::Resource`** is the instance of the `Resource` used for emissions.\n
+- **`Data::Array{Data}`** is the additional data (e.g. for investments).
+"""
+struct NetworkCCSRetrofit <: Network
+    id::Any
+    Cap::TimeProfile
+    Opex_var::TimeProfile
+    Opex_fixed::TimeProfile
+    Input::Dict{Resource,Real}
+    Output::Dict{Resource,Real}
+    Emissions::Dict{ResourceEmit,Real}
+    CO2_capture::Real
+    CO2_proxy::Resource
+    Data::Array{Data}
+end
+
+"""
+    CCSRetroFit <: Network
+
+This node allows for investments into CCS retrofit to a `NetworkCCSRetrofit` node. The
+capture process is implemented through the variable `cap_use`
+
+# Fields
+- **`id`** is the name/identifier of the node.\n
+- **`Cap::TimeProfile`** is the installed capacity.\n
+- **`Opex_var::TimeProfile`** is the variational operational costs per energy unit produced.\n
+- **`Opex_fixed::TimeProfile`** is the fixed operational costs.\n
+- **`Input::Dict{Resource, Real}`** are the input `Resource`s with conversion value `Real`.\n
+- **`Output::Dict{Resource, Real}`** are the generated `Resource`s with conversion value `Real`.
+CO2 is required to be included to be available to have CO2 capture applied properly.\n
+- **`Emissions::Dict{ResourceEmit, Real}`**: emissions per unit produced.\n
+- **`CO2_capture::Real`** is the fraction of CO2 that is sent to the capture unit.\n
+- **`CO2_proxy::Resource`** is the instance of the `Resource` used for emissions.\n
+- **`Data::Array{Data}`** is the additional data (e.g. for investments).
+"""
+struct CCSRetroFit <: Network
+    id::Any
+    Cap::TimeProfile
+    Opex_var::TimeProfile
+    Opex_fixed::TimeProfile
+    Input::Dict{Resource,Real}
+    Output::Dict{Resource,Real}
+    Emissions::Dict{ResourceEmit,Real}
+    CO2_capture::Real
+    CO2_proxy::Resource
+    Data::Array{Data}
+end

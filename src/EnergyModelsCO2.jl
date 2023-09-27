@@ -1,5 +1,6 @@
 """
-`EnergyModelsCO2.jl` implements a node [`CO2Storage`](@ref) for representing storage of CO₂.
+`EnergyModelsCO2.jl` is representinv several technologies that are relevant within CO₂
+capture, transport, utilization, and storage chains.
 """
 module EnergyModelsCO2
 
@@ -14,6 +15,6 @@ include("datastructures.jl")
 include("model.jl")
 include("checks.jl")
 
-export CO2Storage
+export CO2Storage, NetworkCCSRetrofit, CCSRetroFit
 
 end # module

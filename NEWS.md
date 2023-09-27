@@ -1,6 +1,13 @@
 Release Notes
 =============
 
+Version 0.4.0 (2023-09-27)
+--------------------------
+### Implemented two nodes related to retrofit of CCS
+ * Both nodes have to be used together for proper analysis
+ * `NetworkCCSRetrofit <: Network` is a `RefNetworkEmissions` node to which CCS can be implemented as a retrofit
+ * `CCSRetroFit <: Network` is a node where the investments lead to the potential of utilizing CO2 capture. If the node has no capacity, then all CO2 is emitted
+
 Version 0.3.0 (2023-06-06)
 --------------------------
 ### Switch to TimeStruct.jl

@@ -1,12 +1,4 @@
-using EnergyModelsCO2
-using EnergyModelsBase
-using HiGHS
-using JuMP
-using Test
-using TimeStruct
-
-const EMB = EnergyModelsBase
-
+# Definition of the CO2 resource
 CO2 = ResourceEmit("CO2", 1.0)
 
 function small_graph(T)
@@ -15,9 +7,6 @@ function small_graph(T)
     # Creation of a dictionary with entries of 0. for all resources
     𝒫₀ = Dict(k => 0 for k ∈ products)
 
-    # Creation of a dictionary with entries of 0. for all emission resources
-    𝒫ᵉᵐ₀ = Dict(k => 0.0 for k ∈ products if typeof(k) == ResourceEmit{Float64})
-
     ng_source = RefSource(
         "ng",
         FixedProfile(9),
@@ -25,7 +14,6 @@ function small_graph(T)
         FixedProfile(1),
         Dict(CO2 => 1),
         [],
-        𝒫ᵉᵐ₀,
     )
 
     co2_storage = CO2Storage(

@@ -85,7 +85,8 @@ test:pages:
   script:
     - cd docs
     - julia -e 'using Pkg; Pkg.Registry.status()'
-    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")'  # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")'   # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.develop(path="..")'  # install the version that is pushed
     - julia --project=. --color=yes make.jl  # make documentation
   artifacts:
     paths:
@@ -101,7 +102,8 @@ pages:
   script:
     - cd docs
     - julia -e 'using Pkg; Pkg.Registry.status()'
-    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")'  # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")'   # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.develop(path="..")'  # install the version that is pushed
     - julia --project=. --color=yes make.jl  # make documentation
     - cd ..
     - mv docs/build public  # move to the directory picked up by Gitlab pages
