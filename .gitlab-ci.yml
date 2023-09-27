@@ -85,7 +85,8 @@ test:pages:
   script:
     - cd docs
     - julia -e 'using Pkg; Pkg.Registry.status()'
-    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")'  # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.add("Documenter")' # install Documenter
+    - julia --project=. -e 'using Pkg; Pkg.add("..")'         # install the version that is pushed
     - julia --project=. --color=yes make.jl  # make documentation
   artifacts:
     paths:
