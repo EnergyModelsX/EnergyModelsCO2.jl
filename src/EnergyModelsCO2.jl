@@ -1,5 +1,5 @@
 """
-`EnergyModelsCO2.jl` is representinv several technologies that are relevant within CO₂
+`EnergyModelsCO2.jl` is representing several technologies that are relevant within CO₂
 capture, transport, utilization, and storage chains.
 """
 module EnergyModelsCO2
@@ -13,8 +13,11 @@ const TS = TimeStruct
 
 include("datastructures.jl")
 include("model.jl")
+include("constraint_functions.jl")
 include("checks.jl")
+include("data_functions.jl")
+include("utils.jl")
 
-export CO2Storage, NetworkCCSRetrofit, CCSRetroFit
+export CO2Source, CO2Storage, NetworkCCSRetrofit, CCSRetroFit
 
 end # module
