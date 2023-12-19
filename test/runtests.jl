@@ -1,4 +1,3 @@
-using Test
 using EnergyModelsCO2
 using EnergyModelsBase
 using HiGHS
@@ -7,6 +6,7 @@ using Test
 using TimeStruct
 
 const EMB = EnergyModelsBase
+const EMC = EnergyModelsCO2
 
 TEST_ATOL = 1e-6
 

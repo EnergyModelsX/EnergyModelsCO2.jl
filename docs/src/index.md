@@ -6,7 +6,6 @@ CurrentModule = EnergyModelsCO2
 
 Documentation for [EnergyModelsCO2](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl).
 
-
 ```@docs
 EnergyModelsCO2
 ```
@@ -31,7 +30,7 @@ In addition, it takes the total storage limit into account.
 
 ### [`NetworkCCSRetrofit`](@ref)
 
-The main difference from a regular `RefNetwork`-node is that it does not directly emit CO₂.
+The main difference from a regular `RefNetworkNode`-node is that it does not directly emit CO₂.
 Instead, a proxy CO₂ is produced that leaves the node in the output.
 It cannot be used as standalone, but instead requires the inclusion of a [`CCSRetroFit`](@ref), either directly coupled, or alternatively _via_ an `Availability` node.
 

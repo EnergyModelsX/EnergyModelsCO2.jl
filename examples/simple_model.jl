@@ -15,31 +15,21 @@ using TimeStruct
 
 const EMB = EnergyModelsBase
 
-NG = ResourceEmit("NG", 0.3)
 CO2 = ResourceEmit("CO2", 1.0)
-Power = ResourceCarrier("Power", 0.0)
-
 products = [CO2]
 
-# Creation of a dictionary with entries of 0. for all resources
-𝒫₀ = Dict(k => 0 for k ∈ products)
-
-# Creation of a dictionary with entries of 0. for all emission resources
-𝒫ᵉᵐ₀ = Dict(k => 0.0 for k ∈ products if typeof(k) == ResourceEmit{Float64})
-
 function small_graph()
-    ng_source = RefSource(
-        "ng",
+    co2_source = CO2Source(
+        "co2_source",
         FixedProfile(9),
         FixedProfile(-3),
         FixedProfile(1),
         Dict(CO2 => 1),
-        [],
-        𝒫ᵉᵐ₀,
+        Array{Data}([]),
     )
 
     co2_storage = CO2Storage(
-        "co2",
+        "co2_Storage",
         FixedProfile(10),
         FixedProfile(1000),
         FixedProfile(2),
@@ -47,20 +37,16 @@ function small_graph()
         CO2,
         Dict(CO2 => 1),
         Dict(CO2 => 1),
-        [],
+        Array{Data}([]),
     )
 
-    nodes = [GenAvailability(1, 𝒫₀, 𝒫₀), ng_source, co2_storage]
-    links = [
-        Direct("ng-av", ng_source, nodes[1])
-        Direct("av-co2", nodes[1], co2_storage)
-        Direct("co2-av", co2_storage, nodes[1])
-        # Direct("av-sink", nodes[1], co2_sink)
-    ]
+    nodes = [co2_source, co2_storage]
+    links = [Direct("source-storage", co2_source, co2_storage)]
 
     # Creation of the time structure and the used global data
-    T = TwoLevel(2, 1, SimpleTimes(3, 1))
-    modeltype = OperationalModel(Dict(CO2 => FixedProfile(3), NG => FixedProfile(3)), CO2)
+    T = TwoLevel(2, 1, SimpleTimes(3, 1), op_per_strat = 3)
+    modeltype =
+        OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(0)), CO2)
 
     case = Dict(:nodes => nodes, :links => links, :products => products, :T => T)
     return case, modeltype
