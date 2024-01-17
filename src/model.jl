@@ -39,7 +39,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Mass/energy balance constraints for stored energy carrier.
     for (t_inv_prev, t_inv) ∈ withprev(𝒯ᴵⁿᵛ)
-        constraints_level(m, n, t_inv, t_inv_prev)
+        EMB.constraints_level_sp(m, n, t_inv, t_inv_prev, modeltype)
     end
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
