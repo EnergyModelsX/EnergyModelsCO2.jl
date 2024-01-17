@@ -18,21 +18,23 @@ function EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltyp
 end
 
 """
-    constraints_level(
+    EMB.constraints_level_sp(
         m,
         n::CO2Storage,
         t_inv::TimeStruct.StrategicPeriod{T, U},
         t_inv_prev,
+        modeltype
         ) where {T, U<:SimpleTimes}
 
 Create the level constraint for a CO₂ storage node when the `TimeStructure`
 is given as `SimpleTimes`.
 """
-function constraints_level(
+function EMB.constraints_level_sp(
     m,
     n::CO2Storage,
     t_inv::TimeStruct.StrategicPeriod{T,U},
     t_inv_prev,
+    modeltype,
 ) where {T,U<:SimpleTimes}
     for (t_prev, t) ∈ withprev(t_inv)
         # Extract the previous level
@@ -47,21 +49,23 @@ function constraints_level(
 end
 
 """
-    constraints_level(
+    EMB.constraints_level_sp(
         m,
         n::CO2Storage,
         t_inv::TimeStruct.StrategicPeriod{T, RepresentativePeriods{U, T, SimpleTimes{T}}},
         t_inv_prev,
+        modeltype
         ) where {T, U}
 
 Create the level constraint for a CO₂ storage node when the `TimeStructure` is given as
 `RepresentativePeriods`.
 """
-function constraints_level(
+function EMB.constraints_level_sp(
     m,
     n::CO2Storage,
     t_inv::TimeStruct.StrategicPeriod{T,RepresentativePeriods{U,T,SimpleTimes{T}}},
     t_inv_prev,
+    modeltype,
 ) where {T,U}
 
     # Declaration of the required subsets
