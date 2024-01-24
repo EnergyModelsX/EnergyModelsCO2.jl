@@ -140,7 +140,7 @@ end
         value.(m[:flow_in][ccs, t, CO2_proxy]) -
         value.(m[:cap_use][ccs, t]) * co2_capture(ccs.data[1]) +
         value.(m[:flow_in][ccs, t, NG]) * co2_int(NG) +
-        value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2) for t ∈ T,
+        value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2, t) for t ∈ T,
         atol ∈ TEST_ATOL
     ) == length(T)
 
@@ -185,8 +185,8 @@ end
         value.(m[:flow_in][process, t, NG]) *
         co2_int(NG) *
         (1 - co2_capture(process.data[1])) +
-        value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2) for t ∈ T,
-        atol ∈ TEST_ATOL
+        value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2, t) for
+        t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 
     # Test that the emissions are correct in the ccs node
@@ -196,7 +196,7 @@ end
         value.(m[:flow_in][ccs, t, CO2_proxy]) -
         value.(m[:cap_use][ccs, t]) * co2_capture(ccs.data[1]) +
         value.(m[:flow_in][ccs, t, NG]) * co2_int(NG) * (1 - co2_capture(ccs.data[1])) +
-        value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2) for t ∈ T,
+        value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2, t) for t ∈ T,
         atol ∈ TEST_ATOL
     ) == length(T)
 
@@ -233,7 +233,7 @@ end
         value.(m[:flow_out][process, t, CO2_proxy]) ≈
         (
             value.(m[:flow_in][process, t, NG]) * co2_int(NG) +
-            value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2)
+            value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2, t)
         ) * co2_capture(process.data[1]) for t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 
@@ -243,7 +243,7 @@ end
         value.(m[:emissions_node][process, t, CO2]) ≈
         (
             value.(m[:flow_in][process, t, NG]) * co2_int(NG) +
-            value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2)
+            value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2, t)
         ) * (1 - co2_capture(process.data[1])) for t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 
@@ -255,7 +255,7 @@ end
         value.(m[:cap_use][ccs, t]) * co2_capture(ccs.data[1]) +
         (
             value.(m[:flow_in][ccs, t, NG]) * co2_int(NG) +
-            value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2)
+            value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2, t)
         ) * (1 - co2_capture(ccs.data[1])) for t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 
@@ -266,7 +266,7 @@ end
         value.(m[:cap_use][ccs, t]) * co2_capture(ccs.data[1]) +
         (
             value.(m[:flow_in][ccs, t, NG]) * co2_int(NG) +
-            value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2)
+            value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2, t)
         ) * co2_capture(ccs.data[1]) for t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 end

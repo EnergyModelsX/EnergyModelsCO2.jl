@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+Version 0.5.2 (2024-01-18)
+--------------------------
+ * Adjustment to changes in EMB v0.6.4 allowing for allowing time dependent process emissions.
+
 Version 0.5.1 (2024-01-17)
 --------------------------
  * Update the methods `constraints_level_aux` and `constraints_level` to match the signature updates for these methods in `EnergyModelsBase`. This includes renaming `constraints_level` to `constraints_level_sp`.

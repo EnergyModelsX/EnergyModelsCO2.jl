@@ -172,11 +172,11 @@ Capture the proxy CO2 instance but not the energy usage related emissions and th
 emissions. Does not require `emissions` as input, but can be supplied.
 
 # Fields
-- **`emissions::Dict{ResourceEmit, Real}`**: emissions per unit produced.\n
-- **`co2_capture::Real`** is the CO2 capture rate.
+- **`emissions::Dict{ResourceEmit, T}`**: emissions per unit produced.\n
+- **`co2_capture::Float64`** is the CO2 capture rate.
 """
-struct CaptureNone <: CaptureData
-    emissions::Dict{ResourceEmit,Real}
-    co2_capture::Real
+struct CaptureNone{T} <: CaptureData{T}
+    emissions::Dict{ResourceEmit,T}
+    co2_capture::Float64
 end
-CaptureNone(co2_capture::Real) = CaptureNone(Dict(), co2_capture)
+CaptureNone(co2_capture::Float64) = CaptureNone(Dict{ResourceEmit,Float64}(), co2_capture)
