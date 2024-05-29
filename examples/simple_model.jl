@@ -30,21 +30,17 @@ function small_graph()
 
     co2_storage = CO2Storage(
         "co2_Storage",
-        FixedProfile(10),
-        FixedProfile(1000),
-        FixedProfile(2),
-        FixedProfile(1),
+        StorCapOpex(FixedProfile(10), FixedProfile(2), FixedProfile(1)),
+        StorCap(FixedProfile(1000)),
         CO2,
         Dict(CO2 => 1),
-        Dict(CO2 => 1),
-        Array{Data}([]),
     )
 
     nodes = [co2_source, co2_storage]
     links = [Direct("source-storage", co2_source, co2_storage)]
 
     # Creation of the time structure and the used global data
-    T = TwoLevel(2, 1, SimpleTimes(3, 1), op_per_strat = 3)
+    T = TwoLevel(2, 2, SimpleTimes(3, 1), op_per_strat = 3)
     modeltype =
         OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(0)), CO2)
 
