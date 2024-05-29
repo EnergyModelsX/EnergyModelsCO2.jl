@@ -18,77 +18,38 @@ function EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltyp
 end
 
 """
-    EMB.constraints_level_sp(
-        m,
-        n::CO2Storage,
-        t_inv::TimeStruct.StrategicPeriod{T, U},
-        t_inv_prev,
-        modeltype
-        ) where {T, U<:SimpleTimes}
+    constraints_level_aux(m, n::Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
-Create the level constraint for a CO₂ storage node when the `TimeStructure`
-is given as `SimpleTimes`.
+Function for creating the Δ constraint for the level of a reference storage node with a
+`ResourceCarrier` resource.
 """
-function EMB.constraints_level_sp(
-    m,
-    n::CO2Storage,
-    t_inv::TimeStruct.StrategicPeriod{T,U},
-    t_inv_prev,
-    modeltype,
-) where {T,U<:SimpleTimes}
-    for (t_prev, t) ∈ withprev(t_inv)
-        # Extract the previous level
-        prev_level = previous_level(m, n, t_inv_prev, t_prev)
-
-        # Mass balance constraints for stored CO2
-        @constraint(
-            m,
-            m[:stor_level][n, t] == prev_level + m[:stor_level_Δ_op][n, t] * duration(t)
-        )
-    end
-end
-
-"""
-    EMB.constraints_level_sp(
-        m,
-        n::CO2Storage,
-        t_inv::TimeStruct.StrategicPeriod{T, RepresentativePeriods{U, T, SimpleTimes{T}}},
-        t_inv_prev,
-        modeltype
-        ) where {T, U}
-
-Create the level constraint for a CO₂ storage node when the `TimeStructure` is given as
-`RepresentativePeriods`.
-"""
-function EMB.constraints_level_sp(
-    m,
-    n::CO2Storage,
-    t_inv::TimeStruct.StrategicPeriod{T,RepresentativePeriods{U,T,SimpleTimes{T}}},
-    t_inv_prev,
-    modeltype,
-) where {T,U}
-
+function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     # Declaration of the required subsets
-    𝒯ʳᵖ = repr_periods(t_inv)
+    𝒯ᴵⁿᵛ = strategic_periods(𝒯)
+    p_stor = storage_resource(n)
+    𝒫ᵉᵐ = setdiff(EMB.res_sub(𝒫, ResourceEmit), [p_stor])
 
-    # Constraint for the total change in the level in a given representative period
+    # Set the lower bound for the emissions in the storage node
+    for t ∈ 𝒯
+        set_lower_bound(m[:emissions_node][n, t, p_stor], 0)
+    end
+
+    # Constraint for the change in the level in a given operational period
     @constraint(
         m,
-        [t_rp ∈ 𝒯ʳᵖ],
-        m[:stor_level_Δ_rp][n, t_rp] == sum(
-            m[:stor_level_Δ_op][n, t] * multiple_strat(t_inv, t) * duration(t) for t ∈ t_rp
-        )
+        [t ∈ 𝒯],
+        m[:stor_level_Δ_op][n, t] ==
+        m[:flow_in][n, t, p_stor] - m[:emissions_node][n, t, p_stor]
     )
 
-    for (t_rp_prev, t_rp) ∈ withprev(𝒯ʳᵖ), (t_prev, t) ∈ withprev(t_rp)
+    # Constraint for the change in the level in a strategic period
+    @constraint(
+        m,
+        [t_inv ∈ 𝒯ᴵⁿᵛ],
+        m[:stor_level_Δ_sp][n, t_inv] ==
+        sum(m[:stor_level_Δ_op][n, t] * EMB.multiple(t_inv, t) for t ∈ t_inv)
+    )
 
-        # Extract the previous level
-        prev_level = previous_level(m, n, t_inv_prev, t_prev, t_rp_prev)
-
-        # Mass balance constraints for stored CO2
-        @constraint(
-            m,
-            m[:stor_level][n, t] == prev_level + m[:stor_level_Δ_op][n, t] * duration(t)
-        )
-    end
+    # Constraint for the emissions to avoid problems with unconstrained variables.
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ], m[:emissions_node][n, t, p_em] == 0)
 end

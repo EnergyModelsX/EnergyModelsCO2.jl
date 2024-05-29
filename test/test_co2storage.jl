@@ -13,25 +13,21 @@ function small_graph(T; source_cap = 9)
         FixedProfile(-10),
         FixedProfile(1),
         Dict(CO2 => 1),
-        Array{Data}([]),
     )
 
     co2_storage = CO2Storage(
         "storage",
-        FixedProfile(10),
-        FixedProfile(20000),
-        FixedProfile(2),
-        FixedProfile(1),
+        StorCapOpex(FixedProfile(10), FixedProfile(2), FixedProfile(1)),
+        StorCap(FixedProfile(20000)),
         CO2,
         Dict(CO2 => 1),
-        Array{Data}([]),
     )
 
     nodes = [co2_source, co2_storage]
     links = [Direct("source_stor", co2_source, co2_storage)]
 
     modeltype =
-        OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(0)), CO2)
+        OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(20)), CO2)
 
     case = Dict(:nodes => nodes, :links => links, :products => products, :T => T)
     return case, modeltype

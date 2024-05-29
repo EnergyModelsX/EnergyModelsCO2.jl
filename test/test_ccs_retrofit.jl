@@ -10,14 +10,8 @@ function CO2_retrofit(emissions_data)
     # Creation of the time structure
     T = TwoLevel(1, 1, SimpleTimes(3, 2); op_per_strat = 6)
 
-    ng_source = RefSource(
-        "ng",
-        FixedProfile(25),
-        FixedProfile(3),
-        FixedProfile(1),
-        Dict(NG => 1),
-        Array{Data}([]),
-    )
+    ng_source =
+        RefSource("ng", FixedProfile(25), FixedProfile(3), FixedProfile(1), Dict(NG => 1))
 
     process_unit = NetworkCCSRetrofit(
         "process",
@@ -43,13 +37,10 @@ function CO2_retrofit(emissions_data)
 
     co2_storage = CO2Storage(
         "co2",
-        FixedProfile(10),
-        FixedProfile(2000),
-        FixedProfile(-2),
-        FixedProfile(1),
+        StorCapOpex(FixedProfile(10), FixedProfile(-2), FixedProfile(1)),
+        StorCap(FixedProfile(2000)),
         CO2,
         Dict(CO2 => 1),
-        Array{Data}([]),
     )
 
     demand = RefSink(
@@ -57,7 +48,6 @@ function CO2_retrofit(emissions_data)
         FixedProfile(10),
         Dict(:surplus => FixedProfile(0), :deficit => FixedProfile(1e6)),
         Dict(Power => 1),
-        Array{Data}([]),
     )
 
     nodes = [
