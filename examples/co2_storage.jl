@@ -57,7 +57,7 @@ function generate_co2_storage_example_data()
         CO2Source(
             "CO₂ source",               # Node id
             FixedProfile(10),           # Installed capacity in t/h
-            removal_credit,             # Variable OPEX in €/(t/h)
+            removal_credit,             # Variable OPEX in €/t
             FixedProfile(1),            # Fixed OPEX in €/(t/h)/a
             Dict(CO2 => 1),             # Output from the node, in this case, CO₂
         ),
@@ -75,7 +75,7 @@ function generate_co2_storage_example_data()
     ]
 
     # Connect all nodes for the overall energy/mass balance
-    # Another possibility would be to instead couple the nodes with an `Availability` hode
+    # Another possibility would be to instead couple the nodes with an `Availability` node
     links = [
         Direct("source-storage", nodes[1], nodes[2], Linear())
     ]
