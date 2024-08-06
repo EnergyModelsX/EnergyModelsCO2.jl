@@ -4,8 +4,12 @@
 
 ### Bugfix
 
-* Minor bugfix related to the upper limit of CO₂ storage nodes.
-* It was in previous analyses never active, but may result in errors, if the duration of strategic periods is large.
+* Upper limit of the capacity of CO₂ storage nodes:
+  * It was in previous analyses never active, but may result in errors, if the duration of strategic periods is large.
+  * It can result in overestimating the storage potential as the last strategic period in which the storage is filled is not fully included in the bound.
+* Maximum CO₂ capture when using `CaptureEnergyEmissions` or `CaptureProcessEnergyEmissions`:
+  * The maximum capture limit was to tight as it did not include potential additional capture fom energy related or process emissions within the node.
+  * Both were included now.
 
 ## Version 0.6.0 (2024-05-28)
 
