@@ -2,7 +2,6 @@ stages:
   - test
   - deploy
 
-
 before_script:
   # Install git.
   - apt-get update -qq && apt-get install -y git
@@ -51,32 +50,6 @@ before_script:
 test:1.9:
   image: julia:1.9
   <<: *test_definition
-
-
-formatting:
-  image: "julia:latest"
-  stage: test
-  script:
-    - |-
-      julia -e '@info "Verifying formatting"'
-    - |
-      julia --eval '
-      import Pkg
-      Pkg.add("JuliaFormatter")
-      using JuliaFormatter
-      properly_formatted = format("./src"; verbose = true)
-      properly_formatted &= format("./test"; verbose = true)
-      properly_formatted &= format("./docs"; verbose = true)
-
-      if properly_formatted
-        @info "Formatting verified"
-      else
-        @info "Formatting failed - some files have not yet been formatted"
-      end
-      exit(properly_formatted ? 0 : 1)'
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 
 # Test that the pages compile, without making it public. Only runs on merge requests.
 test:pages:

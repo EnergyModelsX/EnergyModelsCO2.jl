@@ -10,9 +10,7 @@ function EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltyp
     𝒫ᵒᵘᵗ = outputs(n)
 
     # Constraint for the individual output stream connections
-    @constraint(
-        m,
-        [t ∈ 𝒯, p ∈ 𝒫ᵒᵘᵗ],
+    @constraint(m, [t ∈ 𝒯, p ∈ 𝒫ᵒᵘᵗ],
         m[:flow_out][n, t, p] == m[:cap_use][n, t] * outputs(n, p)
     )
 end
@@ -29,27 +27,54 @@ function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::Ener
     p_stor = storage_resource(n)
     𝒫ᵉᵐ = setdiff(EMB.res_sub(𝒫, ResourceEmit), [p_stor])
 
-    # Set the lower bound for the emissions in the storage node
-    for t ∈ 𝒯
-        set_lower_bound(m[:emissions_node][n, t, p_stor], 0)
-    end
-
     # Constraint for the change in the level in a given operational period
-    @constraint(
-        m,
-        [t ∈ 𝒯],
+    @constraint(m, [t ∈ 𝒯],
         m[:stor_level_Δ_op][n, t] ==
-        m[:flow_in][n, t, p_stor] - m[:emissions_node][n, t, p_stor]
+            m[:flow_in][n, t, p_stor] - m[:emissions_node][n, t, p_stor]
     )
 
     # Constraint for the change in the level in a strategic period
-    @constraint(
-        m,
-        [t_inv ∈ 𝒯ᴵⁿᵛ],
+    @constraint(m, [t_inv ∈ 𝒯ᴵⁿᵛ],
         m[:stor_level_Δ_sp][n, t_inv] ==
-        sum(m[:stor_level_Δ_op][n, t] * EMB.multiple(t_inv, t) for t ∈ t_inv)
+            sum(m[:stor_level_Δ_op][n, t] * EMB.multiple(t_inv, t) for t ∈ t_inv)
     )
 
-    # Constraint for the emissions to avoid problems with unconstrained variables.
-    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ], m[:emissions_node][n, t, p_em] == 0)
+    # Set the lower bound for the emissions in the storage node (:emissions_node) and to
+    # avoid that emissions larger than the flow into the storage.
+    # Fix all other emissions to a value of 0
+    for t ∈ 𝒯
+        set_lower_bound(m[:emissions_node][n, t, p_stor], 0)
+        set_lower_bound(m[:stor_level_Δ_op][n, t], 0)
+        for p_em ∈ 𝒫ᵉᵐ
+            fix(m[:emissions_node][n, t, p_em], 0,; force=true)
+        end
+    end
+end
+
+"""
+    EMB.constraints_capacity(m, n::CO2Storage, 𝒯::TimeStructure, modeltype::EnergyModel)
+
+Function for creating the constraint on the maximum level of a `CO2Storage` node.
+As a `CO2Storage` node is accumulating, the upper bound is provided as well by the sum of
+the changes in all strategic periods.
+"""
+function EMB.constraints_capacity(m, n::CO2Storage, 𝒯::TimeStructure, modeltype::EnergyModel)
+    # Declaration of the required subsets
+    𝒯ᴵⁿᵛ = strategic_periods(𝒯)
+
+    @constraint(m, [t ∈ 𝒯],
+        m[:stor_level][n, t] <= m[:stor_level_inst][n, t]
+    )
+
+    @constraint(m, [t ∈ 𝒯],
+        m[:stor_charge_use][n, t] <= m[:stor_charge_inst][n, t]
+    )
+
+    # Constraint for the change in the level in a strategic period
+    @constraint(m, [t_inv_1 ∈ 𝒯ᴵⁿᵛ],
+        sum(m[:stor_level_Δ_sp][n, t_inv_2] * duration_strat(t_inv_2) for t_inv_2 ∈ 𝒯ᴵⁿᵛ if t_inv_2 ≤ t_inv_1) ≤
+            m[:stor_level_inst][n, first(t_inv_1)]
+    )
+
+    constraints_capacity_installed(m, n, 𝒯, modeltype)
 end
