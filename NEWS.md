@@ -1,5 +1,12 @@
 # Release Notes
 
+## Unversioned
+
+### Bugfix
+
+* Minor bugfix related to the upper limit of CO₂ storage nodes.
+* It was in previous analyses never active, but may result in errors, if the duration of strategic periods is large.
+
 ## Version 0.6.0 (2024-05-28)
 
 * Adjustment to changes in EMB v0.7.0 introducing the concept of `StorageBehavior` and `AbstractStorageParameters`.
