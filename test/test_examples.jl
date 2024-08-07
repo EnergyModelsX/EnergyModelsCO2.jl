@@ -1,22 +1,17 @@
-using Pkg
+ENV["EMX_TEST"] = true # Set flag for example scripts to check if they are run as part of the tests
 
 @testset "Run examples" begin
-    exdir = joinpath(@__DIR__, "../examples")
-
-    files = first(walkdir(exdir))[3]
-    for file ∈ files
+    exdir = joinpath(@__DIR__, "..", "examples")
+    files = filter(endswith(".jl"), readdir(exdir))
+    for file in files
         if splitext(file)[2] == ".jl"
             @testset "Example $file" begin
-                @info "Run example $file"
-                include(joinpath(exdir, file))
-
+                redirect_stdio(stdout=devnull, stderr=devnull) do
+                    include(joinpath(exdir, file))
+                end
                 @test termination_status(m) == MOI.OPTIMAL
             end
         end
     end
-
-    # Cleanup the test environment. Remove EnergyModelsBase from the environment,
-    # since it is added with `Pkg.develop` by the examples. The tests can not be run with
-    # with the package in the environment.
-    Pkg.rm("EnergyModelsCO2")
+    Pkg.activate(@__DIR__)
 end
