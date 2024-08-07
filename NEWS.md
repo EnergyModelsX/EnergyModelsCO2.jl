@@ -11,6 +11,13 @@
   * The maximum capture limit was to tight as it did not include potential additional capture fom energy related or process emissions within the node.
   * Both were included now.
 
+### Documentation
+
+* Restructured the examples:
+  * Added the examples to the testing routine.
+  * Added an exasmple for CO₂ capture retrofit.
+  * Extended extensively the comments of the examples to improve understandability.
+
 ## Version 0.6.0 (2024-05-28)
 
 * Adjustment to changes in EMB v0.7.0 introducing the concept of `StorageBehavior` and `AbstractStorageParameters`.
