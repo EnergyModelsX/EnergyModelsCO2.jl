@@ -2,6 +2,11 @@
 
 ## Unversioned
 
+### Feature
+
+* Added support for `CaptureProcessEmissions` for `CCSRetroFit` nodes.
+* Changed the name of `CaptureNone` for `CaptureFlueGas` while incorporating a constructor for the old version.
+
 ### Bugfix
 
 * Upper limit of the capacity of CO₂ storage nodes:
