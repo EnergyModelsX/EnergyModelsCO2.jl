@@ -227,6 +227,8 @@ Extract the instance of the CO₂ proxy
 co2_proxy(n) = n.co2_proxy
 
 """
+    CaptureFlueGas{T} <: CaptureData{T}
+
 Capture the proxy CO₂ instance but not the energy usage related emissions and the process
 emissions. Does not require `emissions` as input, but can be supplied.
 
@@ -234,8 +236,8 @@ emissions. Does not require `emissions` as input, but can be supplied.
 - **`emissions::Dict{ResourceEmit, T}`** are the emissions per unit produced.
 - **`co2_capture::Float64`** is the CO₂ capture rate.
 """
-struct CaptureNone{T} <: CaptureData{T}
+struct CaptureFlueGas{T} <: CaptureData{T}
     emissions::Dict{ResourceEmit,T}
     co2_capture::Float64
 end
-CaptureNone(co2_capture::Float64) = CaptureNone(Dict{ResourceEmit,Float64}(), co2_capture)
+CaptureFlueGas(co2_capture::Float64) = CaptureFlueGas(Dict{ResourceEmit,Float64}(), co2_capture)

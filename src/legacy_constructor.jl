@@ -78,3 +78,26 @@ function CO2Storage(
         data,
     )
 end
+
+"""
+    CaptureNone(emissions::Dict{ResourceEmit,T}, co2_capture::Float64)
+
+Legacy constructor for a `CaptureNone`.
+Thhis type was renamed to `CaptureFlueGas` while everything else remains the same.
+"""
+function CaptureNone(emissions::Dict{ResourceEmit,T}, co2_capture::Float64) where {T}
+    @warn(
+        "The used implementation of a `CaptureNone` will be discontinued in the near future.\n" *
+        "Its name is changed to `CaptureFlueGas`",
+        maxlog = 1
+    )
+    return CaptureFlueGas(emissions, co2_capture)
+end
+function CaptureNone(co2_capture::Float64)
+    @warn(
+        "The used implementation of a `CaptureNone` will be discontinued in the near future.\n" *
+        "Its name is changed to `CaptureFlueGas`",
+        maxlog = 1
+    )
+    return CaptureFlueGas(Dict{ResourceEmit,Float64}(), co2_capture)
+end
