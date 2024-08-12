@@ -1,5 +1,5 @@
 """
-    constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltype::EnergyModel)
+    EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltype::EnergyModel)
 
 Function for creating the constraint on the outlet flow from `CO2Source`.
 The standard `constraints_flow_out` function does not allow CO₂ as an outlet flow as the
@@ -16,7 +16,35 @@ function EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltyp
 end
 
 """
-    constraints_level_aux(m, n::Storage, 𝒯, 𝒫, modeltype::EnergyModel)
+    EMB.constraints_flow_out(
+        m,
+        n::NetworkNodeWithRetrofit,
+        𝒯::TimeStructure,
+        modeltype::EnergyModel
+    )
+
+Function for creating the constraint on the outlet flow from `NetworkNodeWithRetrofit`.
+The standard `constraints_flow_out` function does allow for the CO₂ proxy as an outlet flow.
+In the case of retrofitting CO2 capture, this flow constraint is handlded
+"""
+function EMB.constraints_flow_out(
+    m,
+    n::NetworkNodeWithRetrofit,
+    𝒯::TimeStructure,
+    modeltype::EnergyModel
+)
+    # Declaration of the required subsets, excluding CO2, if specified
+    𝒫ᵒᵘᵗ = outputs(n)
+    CO2_proxy = co2_proxy(n)
+
+    # Constraint for the individual output stream connections
+    @constraint(m, [t ∈ 𝒯, p ∈ setdiff(𝒫ᵒᵘᵗ, [CO2_proxy])],
+        m[:flow_out][n, t, p] == m[:cap_use][n, t] * outputs(n, p)
+    )
+end
+
+"""
+    EMB.constraints_level_aux(m, n::Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
 Function for creating the Δ constraint for the level of a reference storage node with a
 `ResourceCarrier` resource.
@@ -66,7 +94,9 @@ function EMB.constraints_capacity(m, n::CO2Storage, 𝒯::TimeStructure, modelty
 
     # Constraint for the change in the level in a strategic period
     @constraint(m, [t_inv_1 ∈ 𝒯ᴵⁿᵛ],
-        sum(m[:stor_level_Δ_sp][n, t_inv_2] * duration_strat(t_inv_2) for t_inv_2 ∈ 𝒯ᴵⁿᵛ if t_inv_2 ≤ t_inv_1) ≤
+        sum(
+            m[:stor_level_Δ_sp][n, t_inv_2] * duration_strat(t_inv_2)
+        for t_inv_2 ∈ 𝒯ᴵⁿᵛ if t_inv_2 ≤ t_inv_1) ≤
             m[:stor_level_inst][n, first(t_inv_1)]
     )
 

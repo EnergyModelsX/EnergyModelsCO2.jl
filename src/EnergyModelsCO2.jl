@@ -20,9 +20,13 @@ include("data_functions.jl")
 include("utils.jl")
 
 # Export all developed nodes
-export CO2Source, CO2Storage, NetworkCCSRetrofit, CCSRetroFit
+export CO2Source, CO2Storage
+export NetworkNodeWithRetrofit, RefNetworkNodeRetrofit, CCSRetroFit
 
 # Export the new `CaptureData`
 export CaptureFlueGas
+
+# Export the legacy constructor
+export NetworkCCSRetrofit
 
 end # module

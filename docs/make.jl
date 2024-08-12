@@ -50,6 +50,7 @@ makedocs(;
         ],
         "How to" => Any[
             "Contribute to EnergyModelsCO2" => "how-to/contribute.md",
+            "Incorporate CO₂ capture retrofit in other nodes"=> "how-to/incorporate_retrofit.md",
         ],
         "Library" => Any[
             "Public" => "library/public.md",

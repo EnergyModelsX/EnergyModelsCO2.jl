@@ -5,7 +5,7 @@ NG = ResourceCarrier("NG", 0.2)
 Power = ResourceCarrier("Power", 0.2)
 products = [CO2, NG, Power, CO2_proxy]
 
-function CO2_retrofit(emissions_data)
+function CO2_retrofit(emissions_data; process_unit=nothing)
 
     # Creation of the time structure
     T = TwoLevel(1, 1, SimpleTimes(3, 2); op_per_strat = 6)
@@ -13,16 +13,18 @@ function CO2_retrofit(emissions_data)
     ng_source =
         RefSource("ng", FixedProfile(25), FixedProfile(3), FixedProfile(1), Dict(NG => 1))
 
-    process_unit = NetworkCCSRetrofit(
-        "process",
-        FixedProfile(10),
-        FixedProfile(5.5),
-        FixedProfile(0),
-        Dict(NG => 2),
-        Dict(Power => 1, CO2_proxy => 0),
-        CO2_proxy,
-        [emissions_data["process"]],
-    )
+    if isnothing(process_unit)
+        process_unit = RefNetworkNodeRetrofit(
+            "process",
+            FixedProfile(10),
+            FixedProfile(5.5),
+            FixedProfile(0),
+            Dict(NG => 2),
+            Dict(Power => 1, CO2_proxy => 0),
+            CO2_proxy,
+            [emissions_data["process"]],
+        )
+    end
 
     ccs_unit = CCSRetroFit(
         "ccs",
@@ -90,7 +92,7 @@ function general_tests(m, case, modeltype)
     @test sum(value.(m[:flow_out][process, t, CO2_proxy]) > 0 for t ∈ T) == length(T)
 end
 
-@testset "NetworkCCSRetrofit - CaptureEnergyEmissions, CCSRetroFit - CaptureFlueGas" begin
+@testset "RefNetworkNodeRetrofit - CaptureEnergyEmissions, CCSRetroFit - CaptureFlueGas" begin
 
     # Create the emissions dictionary
     emissions_data =
@@ -107,7 +109,7 @@ end
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
     @test sum(
         value.(m[:flow_out][process, t, CO2_proxy]) ≈
         value.(m[:flow_in][process, t, NG]) * co2_int(NG) * co2_capture(process.data[1]) for
@@ -115,7 +117,7 @@ end
     ) == length(T)
 
     # Test that the emissions are correct in the process node
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
     @test sum(
         value.(m[:emissions_node][process, t, CO2]) ≈
         value.(m[:flow_in][process, t, NG]) *
@@ -142,7 +144,7 @@ end
     ) == length(T)
 end
 
-@testset "NetworkCCSRetrofit - CaptureEnergyEmissions, CCSRetroFit - CaptureEnergyEmissions" begin
+@testset "RefNetworkNodeRetrofit - CaptureEnergyEmissions, CCSRetroFit - CaptureEnergyEmissions" begin
 
     # Create the emissions file
     emissions_data = Dict(
@@ -161,7 +163,7 @@ end
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
     @test sum(
         value.(m[:flow_out][process, t, CO2_proxy]) ≈
         value.(m[:flow_in][process, t, NG]) * co2_int(NG) * co2_capture(process.data[1]) for
@@ -169,7 +171,7 @@ end
     ) == length(T)
 
     # Test that the emissions are correct in the process node
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
     @test sum(
         value.(m[:emissions_node][process, t, CO2]) ≈
         value.(m[:flow_in][process, t, NG]) *
@@ -203,7 +205,7 @@ end
     ) == length(T)
 end
 
-@testset "NetworkCCSRetrofit - CaptureProcessEmissions, CCSRetroFit - CaptureProcessEmissions" begin
+@testset "RefNetworkNodeRetrofit - CaptureProcessEmissions, CCSRetroFit - CaptureProcessEmissions" begin
 
     # Create the emissions file
     emissions_data = Dict(
@@ -222,7 +224,7 @@ end
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEmissions)
     @test sum(
         value.(m[:flow_out][process, t, CO2_proxy]) ≈
             value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2, t) *
@@ -230,7 +232,7 @@ end
     ) == length(T)
 
     # Test that the emissions are correct in the process node
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEmissions)
     @test sum(
         value.(m[:emissions_node][process, t, CO2]) ≈
             value.(m[:flow_in][process, t, NG]) * co2_int(NG) +
@@ -263,7 +265,7 @@ end
     ) == length(T)
 end
 
-@testset "NetworkCCSRetrofit - CaptureProcessEnergyEmissions, CCSRetroFit - CaptureProcessEnergyEmissions" begin
+@testset "RefNetworkNodeRetrofit - CaptureProcessEnergyEmissions, CCSRetroFit - CaptureProcessEnergyEmissions" begin
 
     # Create the emissions file
     emissions_data = Dict(
@@ -282,7 +284,7 @@ end
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEnergyEmissions)
     @test sum(
         value.(m[:flow_out][process, t, CO2_proxy]) ≈
         (
@@ -292,7 +294,7 @@ end
     ) == length(T)
 
     # Test that the emissions are correct in the process node
-    # - constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEnergyEmissions)
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEnergyEmissions)
     @test sum(
         value.(m[:emissions_node][process, t, CO2]) ≈
         (
@@ -326,5 +328,88 @@ end
     @test sum(
         value.(m[:flow_out][ccs, t, CO2]) ≈
             ((20*.2+10*.1)*.9)*(1+.05*.2+.1)*.9 for t ∈ T, atol ∈ TEST_ATOL
+    ) == length(T)
+end
+
+@testset "New retrofit type " begin
+
+    struct TestRetrofit <: NetworkNodeWithRetrofit
+        id::Any
+        cap::TimeProfile
+        opex_var::TimeProfile
+        opex_fixed::TimeProfile
+        input::Dict{<:Resource,<:Real}
+        output::Dict{<:Resource,<:Real}
+        co2_proxy::Resource
+        data::Array{<:Data}
+    end
+
+
+    process_unit = TestRetrofit(
+        "process",
+        FixedProfile(10),
+        FixedProfile(5.5),
+        FixedProfile(0),
+        Dict(NG => 2),
+        Dict(Power => 1, CO2_proxy => 0),
+        CO2_proxy,
+        [CaptureEnergyEmissions(Dict(CO2 => 0.1), 0.9)],
+    )
+
+    # Create the emissions file
+    emissions_data = Dict(
+        "ccs" => CaptureEnergyEmissions(Dict(CO2 => 0.1), 0.9),
+    )
+
+    # Create and run the model
+    m, case, modeltype = CO2_retrofit(emissions_data; process_unit)
+    general_tests(m, case, modeltype)
+
+    # Extract the input data
+    nodes = case[:nodes]
+    process = nodes[3]
+    ccs = nodes[4]
+    T = case[:T]
+
+    # Test that the outflow of the proxy is correct based on the capture rate
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    @test sum(
+        value.(m[:flow_out][process, t, CO2_proxy]) ≈
+        value.(m[:flow_in][process, t, NG]) * co2_int(NG) * co2_capture(process.data[1]) for
+        t ∈ T, atol ∈ TEST_ATOL
+    ) == length(T)
+
+    # Test that the emissions are correct in the process node
+    # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    @test sum(
+        value.(m[:emissions_node][process, t, CO2]) ≈
+        value.(m[:flow_in][process, t, NG]) *
+        co2_int(NG) *
+        (1 - co2_capture(process.data[1])) +
+        value.(m[:cap_use][process, t]) * process_emissions(process.data[1], CO2, t) for
+        t ∈ T, atol ∈ TEST_ATOL
+    ) == length(T)
+
+    # Test that the emissions are correct in the ccs node
+    # - constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    @test sum(
+        value.(m[:emissions_node][ccs, t, CO2]) ≈
+        value.(m[:flow_in][ccs, t, CO2_proxy]) -
+        value.(m[:cap_use][ccs, t]) * co2_capture(ccs.data[1]) +
+        value.(m[:flow_in][ccs, t, NG]) * co2_int(NG) * (1 - co2_capture(ccs.data[1])) +
+        value.(m[:cap_use][ccs, t]) * process_emissions(ccs.data[1], CO2, t) for t ∈ T,
+        atol ∈ TEST_ATOL
+    ) == length(T)
+
+    # Test that the capture is correct in the ccs node and at its maximum
+    # - constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
+    @test sum(
+        value.(m[:flow_out][ccs, t, CO2]) ≈
+        (value.(m[:cap_use][ccs, t]) + value.(m[:flow_in][ccs, t, NG]) * co2_int(NG)) *
+        co2_capture(ccs.data[1]) for t ∈ T, atol ∈ TEST_ATOL
+    ) == length(T)
+    @test sum(
+        value.(m[:flow_out][ccs, t, CO2]) ≈
+            ((20*.2)*.9)*(1+.05*.2)*.9 for t ∈ T, atol ∈ TEST_ATOL
     ) == length(T)
 end

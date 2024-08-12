@@ -68,7 +68,7 @@ function generate_co2_retrofit_example_data()
             FixedProfile(0),            # Fixed OPEX in €/MW/a
             Dict(NG => 1),              # Output from the node, in this case, natural gas
         ),
-        NetworkCCSRetrofit(
+        RefNetworkNodeRetrofit(
             "CCGT",                     # Node id
             FixedProfile(500),          # Installed capacity in MW
             FixedProfile(5.5),          # Variable OPEX in €/MWh

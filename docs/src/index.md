@@ -18,7 +18,7 @@ It implements the following new technology nodes:
 
 1. a `Source` node [`CO2Source`](@ref),
 2. a `Storage` node [`CO2Storage`](@ref),
-3. a `Network` node [`NetworkCCSRetrofit`](@ref) to which CCS can be retrofitted, and
+3. a `Network` node [`RefNetworkNodeRetrofit`](@ref) to which CCS can be retrofitted, and
 4. a `Network` node [`CCSRetroFit`](@ref) that corresponds to the unit that captures CCS.
 
 ## Developed nodes
@@ -33,7 +33,7 @@ The main difference from a regular `Storage`-node is that the `CO2Storage` will 
 This allows for proper accounting for the total stored CO₂.
 In addition, it takes the total storage limit into account.
 
-### [`NetworkCCSRetrofit`](@ref)
+### [`RefNetworkNodeRetrofit`](@ref)
 
 The main difference from a regular `RefNetworkNode`-node is that it does not directly emit CO₂.
 Instead, a proxy CO₂ is produced that leaves the node in the output.
@@ -41,7 +41,7 @@ It cannot be used as standalone, but instead requires the inclusion of a [`CCSRe
 
 ### [`CCSRetroFit`](@ref)
 
-The `CCSRetroFit`-node has to be coupled with a `NetworkCCSRetrofit` node.
+The `CCSRetroFit`-node has to be coupled with a `RefNetworkNodeRetrofit` node.
 In the base case, when the installed capacity is 0, all CO₂ entering the node is emitted.
 The CO₂ is captured, if a given capacity is installed.
 However, it only captures the proxy CO₂ resource and not process or energy use related emissions.
@@ -72,6 +72,7 @@ Depth = 1
 ```@contents
 Pages = [
     "how-to/contribute.md",
+    "how-to/incorporate_retrofit.md",
 ]
 Depth = 1
 ```

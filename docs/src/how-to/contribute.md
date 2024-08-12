@@ -1,4 +1,4 @@
-# Contribute to EnergyModelsCO2
+# [Contribute to EnergyModelsCO2](@id how_to-contribute)
 
 Contributing to `EnergyModelsCO2` can be achieved in several different ways.
 

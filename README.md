@@ -9,10 +9,10 @@ These technologies are
 
 1. `CO2Source :< Source`, a source node that allows for CO₂ as output,
 2. `CO2Storage{T} <: Storage{T}`, a storage node in which the stored CO₂ is accumulating over the strategic periods,
-3. `NetworkCCSRetrofit <: NetworkNode`, a network node with the potential for retrofitting CO₂ capture, and
+3. `RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit`, a network node with the potential for retrofitting CO₂ capture, and
 4. `CCSRetroFit <: NetworkNode`, a network node that corresponds to a CO₂ capture unit.
 
-`NetworkCCSRetrofit` and `CCSRetroFit` have to be coupled to each other for proper functioning as they require a proxy resource for CO2.
+`RefNetworkNodeRetrofit` and `CCSRetroFit` have to be coupled to each other for proper functioning as they require a proxy resource for CO2.
 Further information can be found in the _[corresponding documentation](https://clean_export.pages.sintef.no/EnergyModelsCO2.jl/)_.
 
 > **Note**

@@ -78,11 +78,27 @@ function CO2Storage(
     )
 end
 
+
+"""
+    NetworkCCSRetrofit(args)
+
+Legacy constructor `NetworkCCSRetrofit`
+This type was renamed to `RefNetworkNodeRetrofit` while everything else remains the same.
+"""
+function NetworkCCSRetrofit(args...)
+    @warn(
+        "The used implementation of a `NetworkCCSRetrofit` will be discontinued in the near future.\n" *
+        "Its name is changed to `RefNetworkNodeRetrofit`",
+        maxlog = 1
+    )
+    return RefNetworkNodeRetrofit(args...)
+end
+
 """
     CaptureNone(emissions::Dict{ResourceEmit,T}, co2_capture::Float64)
 
 Legacy constructor for a `CaptureNone`.
-Thhis type was renamed to `CaptureFlueGas` while everything else remains the same.
+This type was renamed to `CaptureFlueGas` while everything else remains the same.
 """
 function CaptureNone(emissions::Dict{ResourceEmit,T}, co2_capture::Float64) where {T}
     @warn(

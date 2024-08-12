@@ -120,7 +120,22 @@ end
 EMB.has_emissions(n::CO2Storage) = true
 
 """
-    NetworkCCSRetrofit <: NetworkNode
+    NetworkNodeWithRetrofit <:NetworkNode
+
+Abstract supertype for allowing retrofitting CO₂ capture to a node.
+Its application requires the user to
+
+1. define their own node as subtype of `NetworkNodeWithRetrofit` and
+2. include a field `co2_proxy` in said node or alternatively define a method for `co2_proxy`
+   for the node.
+
+The application is best explained by [`RefNetworkNodeRetrofit`](@ref) which illustrates it
+for a [`RefNetworkNode`](@extref EnergyModelsBase.RefNetworkNode) node.
+"""
+abstract type NetworkNodeWithRetrofit <:NetworkNode end
+
+"""
+    RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
 
 This node allows for retrofitting CO₂ capture to a `NetworkNode`.
 
@@ -137,10 +152,10 @@ subsequently to a node ([`CCSRetroFit`](@ref)) in which it is either captured, o
 - **`output::Dict{<:Resource, <:Real}`** are the generated `Resource`s with conversion value `Real`.
   `co2_proxy` is required to be included to be available to have CO₂ capture applied properly.
 - **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
-  the CO₂ flow from the `NetworkCCSRetrofit` to the `CCSRetroFit` node.
+  the CO₂ flow from the `RefNetworkNodeRetrofit` to the `CCSRetroFit` node.
 - **`data::Array{<:Data}`** is the additional data (e.g. for investments).
 """
-struct NetworkCCSRetrofit <: NetworkNode
+struct RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
     id::Any
     cap::TimeProfile
     opex_var::TimeProfile
@@ -154,7 +169,7 @@ end
 """
     CCSRetroFit <: Network
 
-This node allows for investments into CO₂ capture retrofit to a [`NetworkCCSRetrofit`](@ref)
+This node allows for investments into CO₂ capture retrofit to a [`RefNetworkNodeRetrofit`](@ref)
 node. The capture process is implemented through the variable `:cap_use`
 
 # Fields
@@ -167,7 +182,7 @@ node. The capture process is implemented through the variable `:cap_use`
   The CO₂ instance is required to be included to be available to have CO₂ capture applied
   properly.
 - **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
-  the CO₂ flow from the `NetworkCCSRetrofit` to the `CCSRetroFit` node.
+  the CO₂ flow from the `RefNetworkNodeRetrofit` to the `CCSRetroFit` node.
 - **`data::Array{<:Data}`** is the additional data (e.g. for investments).
 """
 struct CCSRetroFit <: NetworkNode
