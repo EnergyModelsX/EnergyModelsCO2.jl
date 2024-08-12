@@ -69,40 +69,6 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 end
 
 """
-    create_node(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype::EnergyModel)
-
-Set all constraints for a `NetworkCCSRetrofit`.
-"""
-function EMB.create_node(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype::EnergyModel)
-
-    # Declaration of the required subsets.
-    𝒫ᵒᵘᵗ = outputs(n)
-    CO2_proxy = co2_proxy(n)
-    𝒯ᴵⁿᵛ = strategic_periods(𝒯)
-
-    # Call of the function for the inlet flow to the `NetworkCCSRetrofit` node
-    constraints_flow_in(m, n, 𝒯, modeltype)
-
-    # Iterate through all data and set up the constraints corresponding to the data
-    for data ∈ node_data(n)
-        constraints_data(m, n, 𝒯, 𝒫, modeltype, data)
-    end
-
-    # Outlet constraints for all other resources
-    # The value for `CO2_proxy` is calculated in `constraints_data`.
-    @constraint(m, [t ∈ 𝒯, p ∈ EMB.res_not(𝒫ᵒᵘᵗ, CO2_proxy)],
-        m[:flow_out][n, t, p] == m[:cap_use][n, t] * outputs(n, p)
-    )
-
-    # Call of the function for limiting the capacity to the maximum installed capacity
-    constraints_capacity(m, n, 𝒯, modeltype)
-
-    # Call of the functions for both fixed and variable OPEX constraints introduction
-    constraints_opex_fixed(m, n, 𝒯ᴵⁿᵛ, modeltype)
-    constraints_opex_var(m, n, 𝒯ᴵⁿᵛ, modeltype)
-end
-
-"""
     create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
 Set all constraints for a `CCSRetroFit`.
@@ -125,7 +91,7 @@ function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
         m[:flow_in][n, t, p] == m[:cap_use][n, t] * inputs(n, p)
     )
 
-    # Call of the function for the outlet flow from the `NetworkCCSRetrofit` node
+    # Call of the function for the outlet flow from the `RefNetworkNodeRetrofit` node
     constraints_flow_out(m, n, 𝒯, modeltype)
 
     # Call of the function for limiting the capacity to the maximum installed capacity

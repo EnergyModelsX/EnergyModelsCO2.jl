@@ -5,7 +5,10 @@
 ### Feature
 
 * Added support for `CaptureProcessEmissions` for `CCSRetroFit` nodes.
-* Changed the name of `CaptureNone` for `CaptureFlueGas` while incorporating a constructor for the old version.
+* Changed the name of `CaptureNone` to `CaptureFlueGas` while incorporating a constructor for the old version.
+* Changed the name of `NetworkCCSRetrofit` to `RefNetworkNodeRetrofit` while incorporating a constructor for the old version.
+  The aim is to follow more closely the names in `EnergyModelsBase`.
+* Introduced supertype `NetworkNodeWithRetrofit` to allow the application of the functionality in other packages.
 
 ### Bugfix
 
@@ -22,9 +25,9 @@
   * Added the examples to the testing routine.
   * Added an exasmple for CO₂ capture retrofit.
   * Extended extensively the comments of the examples to improve understandability.
-* Incorporated a new structure for the documentation, including usage of @docs blocks and a structured approach
-* Provided separate pages for all introduced nodal types
-* Added a "how to contribute" page
+* Incorporated a new structure for the documentation, including usage of @docs blocks and a structured approach.
+* Provided separate pages for all introduced nodal types.
+* Added a "how to contribute" page.
 
 ## Version 0.6.0 (2024-05-28)
 

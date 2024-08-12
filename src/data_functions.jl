@@ -1,17 +1,17 @@
 
 """
-    EMB.constraints_data(m, n::NetworkCCSRetrofit, 𝒯, 𝒫, modeltype, data::EmissionsData)
+    EMB.constraints_data(m, n::NetworkNodeWithRetrofit, 𝒯, 𝒫, modeltype, data::EmissionsData)
 
 Constraints functions for calculating both the emissions and amount of CO₂ captured in the
 process when CO₂ capture is included as retrofit. It works similar to the approach of
 `EnergyModelsBase`.
 
-The functions are updated for a [`NetworkCCSRetrofit`](@ref)-node as the output is the CO₂
-proxy and not CO₂.
+The functions are updated for a [`NetworkNodeWithRetrofit`](@ref)-node as the output is the
+CO₂ proxy and not CO₂.
 """
 function EMB.constraints_data(
     m,
-    n::NetworkCCSRetrofit,
+    n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
     modeltype,
@@ -46,7 +46,7 @@ function EMB.constraints_data(
 end
 function EMB.constraints_data(
     m,
-    n::NetworkCCSRetrofit,
+    n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
     modeltype,
@@ -82,7 +82,7 @@ function EMB.constraints_data(
 end
 function EMB.constraints_data(
     m,
-    n::NetworkCCSRetrofit,
+    n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
     modeltype,

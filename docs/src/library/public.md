@@ -12,8 +12,15 @@ CO2Storage
 ### CO₂ capture retrofit nodes
 
 ```@docs
-NetworkCCSRetrofit
+NetworkNodeWithRetrofit
+RefNetworkNodeRetrofit
 CCSRetroFit
+```
+
+### Legacy constructors
+
+```@docs
+NetworkCCSRetrofit
 ```
 
 ## `CaptureData` for `CCSRetrofit`
