@@ -1,8 +1,8 @@
 # EnergyModelsCO2
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://clean_export.pages.sintef.no/EnergyModelsCO2.jl/)
-[![Build Status](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/badges/main/pipeline.svg)](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/-/pipelines)
-[![Coverage](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/badges/main/coverage.svg?job=test:1.9)](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/-/jobs)
+[![Build Status](https://github.com/EnergyModelsX/EnergyModelsCO2.jl/workflows/CI/badge.svg)](https://github.com/EnergyModelsX/EnergyModelsCO2.jl/actions?query=workflow%3ACI)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://energymodelsx.github.io/EnergyModelsCO2.jl/stable/)
+[![In Development](https://img.shields.io/badge/docs-dev-blue.svg)](https://energymodelsx.github.io/EnergyModelsCO2.jl/dev/)
 
 `EnergyModelsCO2` is a package extending `EnergyModelsBase` to model technologies from the CO₂ value chain.
 These technologies are
@@ -13,7 +13,7 @@ These technologies are
 4. `CCSRetroFit <: NetworkNode`, a network node that corresponds to a CO₂ capture unit.
 
 `RefNetworkNodeRetrofit` and `CCSRetroFit` have to be coupled to each other for proper functioning as they require a proxy resource for CO2.
-Further information can be found in the _[corresponding documentation](https://clean_export.pages.sintef.no/EnergyModelsCO2.jl/)_.
+Further information can be found in the _[corresponding documentation](https://energymodelsx.github.io/EnergyModelsCO2.jl/stable/)_.
 
 > **Note**
 >
