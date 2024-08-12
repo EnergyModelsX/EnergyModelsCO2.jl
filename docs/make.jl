@@ -15,11 +15,11 @@ DocMeta.setdocmeta!(
 )
 
 # Copy the NEWS.md file
-news = "src/manual/NEWS.md"
+news = "docs/src/manual/NEWS.md"
 if isfile(news)
     rm(news)
 end
-cp("../NEWS.md", "src/manual/NEWS.md")
+cp("NEWS.md", news)
 
 links = InterLinks(
     "TimeStruct" => "https://sintefore.github.io/TimeStruct.jl/stable/",
@@ -27,15 +27,14 @@ links = InterLinks(
 )
 
 makedocs(;
+    sitename = "EnergyModelsCO2",
     modules = [EnergyModelsCO2],
     authors = "Sigmund Eggen Holm <sigmund.holm@sintef.no> and contributors",
-    repo = "https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/blob/{commit}{path}#{line}",
-    sitename = "EnergyModelsCO2",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
-        canonical = "https://clean_export.pages.sintef.no/EnergyModelsCO2.jl/",
         edit_link = "main",
         assets = String[],
+        ansicolor = true,
     ),
     pages = [
         "Home" => "index.md",
@@ -61,4 +60,8 @@ makedocs(;
         ]
     ],
     plugins=[links],
+)
+
+deploydocs(;
+    repo = "github.com/EnergyModelsX/EnergyModelsCO2.git",
 )

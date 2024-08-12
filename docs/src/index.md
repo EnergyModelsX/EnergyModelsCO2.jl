@@ -1,18 +1,12 @@
-```@meta
-CurrentModule = EnergyModelsCO2
-```
-
 # EnergyModelsCO2
 
-Documentation for [EnergyModelsCO2](https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl).
+Documentation for [EnergyModelsCO2](https://github.com/EnergyModelsX/EnergyModelsCO2).
 
 ```@docs
 EnergyModelsCO2
 ```
 
-This package depends on
-[EnergyModelsBase](https://clean_export.pages.sintef.no/energymodelsbase.jl/)
-and [TimeStruct](https://clean_export.pages.sintef.no/timestructures.jl/).
+This package depends on [EnergyModelsBase](https://energymodelsx.github.io/EnergyModelsBase.jl/stable/) and [TimeStruct](https://sintefore.github.io/TimeStruct.jl/stable/).
 
 It implements the following new technology nodes:
 

@@ -96,11 +96,11 @@ optimizer = optimizer_with_attributes(HiGHS.Optimizer, MOI.Silent() => true)
 m = run_model(case, model, optimizer)
 
 """
-    process_results(m, case)
+    process_co2_storage_results(m, case)
 
 Function for processing the results to be represented in the a table afterwards.
 """
-function process_results(m, case)
+function process_co2_storage_results(m, case)
     # Extract the nodes and the strategic periods from the data
     co2_stor  = case[:nodes][2]
     𝒯ᴵⁿᵛ = strategic_periods(case[:T])
@@ -131,7 +131,7 @@ function process_results(m, case)
 end
 
 # Display some results
-table = process_results(m, case)
+table = process_co2_storage_results(m, case)
 
 @info(
     "Individual results from the storage node:\n" *
