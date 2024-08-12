@@ -6,8 +6,8 @@ Constraints functions for calculating both the emissions and amount of CO₂ cap
 process when CO₂ capture is included as retrofit. It works similar to the approach of
 `EnergyModelsBase`.
 
-The functions are updated for a `NetworkCCSRetrofit`-node as the output is the CO₂ proxy and
-not CO₂.
+The functions are updated for a [`NetworkCCSRetrofit`](@ref)-node as the output is the CO₂
+proxy and not CO₂.
 """
 function EMB.constraints_data(
     m,
@@ -22,29 +22,23 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
-    CO2_tot = @expression(
-        m,
-        [t ∈ 𝒯],
+    CO2_tot = @expression(m, [t ∈ 𝒯],
         m[:cap_use][n, t] * process_emissions(data, CO2, t) +
         sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
     )
 
     # Constraint for the emissions based on the assumed capture rate
-    @constraint(
-        m,
-        [t ∈ 𝒯],
+    @constraint(m, [t ∈ 𝒯],
         m[:emissions_node][n, t, CO2] == (1 - co2_capture(data)) * CO2_tot[t]
     )
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(
-        m,
-        [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
         m[:emissions_node][n, t, p_em] ==
-        m[:cap_use][n, t] * process_emissions.(data, p_em, t)
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2 proxy
@@ -63,25 +57,24 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
-    CO2_tot = @expression(m, [t ∈ 𝒯], sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ))
+    CO2_tot = @expression(m, [t ∈ 𝒯],
+        sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
+    )
 
     # Constraint for the emissions based on the assumed capture rate and process emissions
-    @constraint(
-        m,
-        [t ∈ 𝒯],
+    @constraint(m, [t ∈ 𝒯],
         m[:emissions_node][n, t, CO2] ==
-        (1 - co2_capture(data)) * CO2_tot[t] +
-        m[:cap_use][n, t] * process_emissions(data, CO2, t)
+            (1 - co2_capture(data)) * CO2_tot[t] +
+            m[:cap_use][n, t] * process_emissions(data, CO2, t)
     )
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(
-        m,
-        [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
+        m[:emissions_node][n, t, p_em] ==
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2 proxy
@@ -100,25 +93,24 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
-    CO2_tot = @expression(m, [t ∈ 𝒯], m[:cap_use][n, t] * process_emissions(data, CO2, t))
+    CO2_tot = @expression(m, [t ∈ 𝒯],
+        m[:cap_use][n, t] * process_emissions(data, CO2, t)
+    )
 
     # Constraint for the emissions based on the assumed capture rate and energy usage
-    @constraint(
-        m,
-        [t ∈ 𝒯],
+    @constraint(m, [t ∈ 𝒯],
         m[:emissions_node][n, t, CO2] ==
-        (1 - co2_capture(data)) * CO2_tot[t] +
-        sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
+            (1 - co2_capture(data)) * CO2_tot[t] +
+            sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
     )
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(
-        m,
-        [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
+    m[:emissions_node][n, t, p_em] ==
+        m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2 proxy
@@ -157,12 +149,10 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
-    CO2_tot = @expression(
-        m,
-        [t ∈ 𝒯],
+    CO2_tot = @expression(m, [t ∈ 𝒯],
         m[:cap_use][n, t] * (1 + process_emissions(data, CO2, t)) +
         sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
     )
@@ -171,20 +161,17 @@ function EMB.constraints_data(
     CO2_captured = @expression(m, [t ∈ 𝒯], CO2_tot[t] * co2_capture(data))
 
     # Constraint for the CO2 emissions
-    @constraint(
-        m,
-        [t ∈ 𝒯],
+    @constraint(m, [t ∈ 𝒯],
         m[:emissions_node][n, t, CO2] ==
-        m[:flow_in][n, t, CO2_proxy] +
-        m[:cap_use][n, t] * process_emissions(data, CO2, t) +
-        sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ) - CO2_captured[t]
+            m[:flow_in][n, t, CO2_proxy] +
+            m[:cap_use][n, t] * process_emissions(data, CO2, t) +
+            sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ) - CO2_captured[t]
     )
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
-    @constraint(
-        m,
-        [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+    @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
+        m[:emissions_node][n, t, p_em] ==
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2
@@ -214,11 +201,12 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
     CO2_tot = @expression(m, [t ∈ 𝒯],
-        m[:cap_use][n, t] + sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
+        m[:cap_use][n, t] +
+        sum(co2_int(p) * m[:flow_in][n, t, p] for p ∈ 𝒫ⁱⁿ)
     )
 
     # Calculate the amount of CO2 captured
@@ -234,7 +222,8 @@ function EMB.constraints_data(
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
     @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+        m[:emissions_node][n, t, p_em] ==
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2
@@ -263,7 +252,7 @@ function EMB.constraints_data(
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
     CO2_tot = @expression(m, [t ∈ 𝒯],
@@ -283,7 +272,8 @@ function EMB.constraints_data(
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
     @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+        m[:emissions_node][n, t, p_em] ==
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2
@@ -305,10 +295,12 @@ function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::Ca
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
     𝒫ⁱⁿ = inputs(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_em(𝒫), [CO2])
+    𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
-    CO2_tot = @expression(m, [t ∈ 𝒯], m[:cap_use][n, t])
+    CO2_tot = @expression(m, [t ∈ 𝒯],
+        m[:cap_use][n, t]
+    )
 
     # Calculate the amount of CO2 captured
     CO2_captured = @expression(m, [t ∈ 𝒯], CO2_tot[t] * co2_capture(data))
@@ -323,7 +315,8 @@ function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::Ca
 
     # Constraint for the other emissions to avoid problems with unconstrained variables.
     @constraint(m, [t ∈ 𝒯, p_em ∈ 𝒫ᵉᵐ],
-        m[:emissions_node][n, t, p_em] == m[:cap_use][n, t] * process_emissions(data, p_em)
+        m[:emissions_node][n, t, p_em] ==
+            m[:cap_use][n, t] * process_emissions(data, p_em, t)
     )
 
     # Constraint for the outlet of the CO2
@@ -332,6 +325,7 @@ function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::Ca
     # CO2 outlet constraint for limiting the maximum CO2 captured to the capture rate and
     # the inflow
     @constraint(m, [t ∈ 𝒯],
-        m[:flow_out][n, t, CO2] ≤ co2_capture(data) * m[:flow_in][n, t, CO2_proxy]
+        m[:flow_out][n, t, CO2] ≤
+            co2_capture(data) * m[:flow_in][n, t, CO2_proxy]
     )
 end
