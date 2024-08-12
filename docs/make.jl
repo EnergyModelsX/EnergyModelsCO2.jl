@@ -1,5 +1,11 @@
 using Documenter
+using DocumenterInterLinks
+using EnergyModelsBase
 using EnergyModelsCO2
+using TimeStruct
+
+const EMB = EnergyModelsBase
+const EMCO2 = EnergyModelsCO2
 
 DocMeta.setdocmeta!(
     EnergyModelsCO2,
@@ -9,18 +15,22 @@ DocMeta.setdocmeta!(
 )
 
 # Copy the NEWS.md file
-BASE_PATH = joinpath(splitpath(@__DIR__)[1:end-1])
-news_cp_path = joinpath(BASE_PATH, "docs/src/manual/NEWS.md")
-if isfile(news_cp_path)
-    rm(news_cp_path)
+news = "src/manual/NEWS.md"
+if isfile(news)
+    rm(news)
 end
-cp(joinpath(BASE_PATH, "NEWS.md"), news_cp_path)
+cp("../NEWS.md", "src/manual/NEWS.md")
+
+links = InterLinks(
+    "TimeStruct" => "https://sintefore.github.io/TimeStruct.jl/stable/",
+    "EnergyModelsBase" => "https://energymodelsx.github.io/EnergyModelsBase.jl/stable/",
+)
 
 makedocs(;
     modules = [EnergyModelsCO2],
     authors = "Sigmund Eggen Holm <sigmund.holm@sintef.no> and contributors",
     repo = "https://gitlab.sintef.no/clean_export/EnergyModelsCO2.jl/blob/{commit}{path}#{line}",
-    sitename = "EnergyModelsCO2.jl",
+    sitename = "EnergyModelsCO2",
     format = Documenter.HTML(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://clean_export.pages.sintef.no/EnergyModelsCO2.jl/",
@@ -29,9 +39,25 @@ makedocs(;
     ),
     pages = [
         "Home" => "index.md",
-        "Manual" =>
-            Any["Quick Start"=>"manual/quick-start.md", "Release notes"=>"manual/NEWS.md"],
-        "Library" =>
-            Any["Public"=>"library/public.md", "Internals"=>"library/internals.md"],
+        "Manual" => Any[
+            "Quick Start" => "manual/quick-start.md",
+            "Release notes" => "manual/NEWS.md",
+        ],
+        "Nodes" => Any[
+            "CO₂ source" => "nodes/source.md",
+            "CO₂ storage" => "nodes/storage.md",
+            "CO₂ retrofit" => "nodes/retrofit.md",
+        ],
+        "How to" => Any[
+            "Contribute to EnergyModelsCO2" => "how-to/contribute.md",
+        ],
+        "Library" => Any[
+            "Public" => "library/public.md",
+            "Internals" => map(
+                s -> "library/internals/$(s)",
+                sort(readdir(joinpath(@__DIR__, "src/library/internals")))
+            ),
+        ]
     ],
+    plugins=[links],
 )

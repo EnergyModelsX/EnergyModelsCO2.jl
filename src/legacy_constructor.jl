@@ -13,9 +13,9 @@
 
 Legacy constructor for a `CO2Storage`.
 This version will be discontinued in the near future and replaced with the new version of
-`CO2Storage{AccumulatingStrategic}` in which the parametric input defines the behaviour of
-the storage. In addition, the new version supports variable and fixed operating expenses
-for both the charge capacity and the level.
+`CO2Storage` in which the parametric input (not included due to inner constructor) defines
+the behaviour of the storage. In addition, the new version supports variable and fixed
+operating expenses for both the charge capacity and the level.
 """
 function CO2Storage(
     id,
@@ -38,13 +38,12 @@ function CO2Storage(
         maxlog = 1
     )
 
-    return CO2Storage{AccumulatingStrategic}(
+    return CO2Storage(
         id,
         StorCapOpex(rate_cap, opex_var, opex_fixed),
         StorCap(stor_cap),
         stor_res,
         input,
-        output,
         data,
     )
 end
@@ -68,7 +67,7 @@ function CO2Storage(
         maxlog = 1
     )
 
-    return CO2Storage{AccumulatingStrategic}(
+    return CO2Storage(
         id,
         StorCapOpex(rate_cap, opex_var, opex_fixed),
         StorCap(stor_cap),

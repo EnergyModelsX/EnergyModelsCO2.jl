@@ -2,13 +2,20 @@
     EMB.previous_level(
         m,
         n::CO2Storage,
-        prev_pers::PreviousPeriods{Nothing, Nothing, Nothing},
-        cyclic_pers::EMB.CyclicPeriods,
+        prev_pers::PreviousPeriods,
+        cyclic_pers::CyclicPeriods,
         modeltype::EnergyModel,
     )
 
+Adding methods for the function [`EnergyModelsBase.previous_level`](@extref) for a
+[`CO2Storage`](@ref) node. the additional methods are only relevant for the first operational
+period of a strategic period while the framework utilizes the functions from
+`EneryModelsBase` for all other periods.
+
+    prev_pers::PreviousPeriods{Nothing,Nothing,Nothing}
+
 The previous level in the first operational period in the first representative period in the
-first strategic period is set to 0 for a [`CO2Storage`](@ref) node.
+first strategic period is set to 0.
 
 The reason for that is that the storage is considered to be empty in the beginning of the
 analysis.
@@ -16,30 +23,24 @@ analysis.
 function EMB.previous_level(
     m,
     n::CO2Storage,
-    prev_pers::EMB.PreviousPeriods{Nothing,Nothing,Nothing},
-    cyclic_pers::EMB.CyclicPeriods,
+    prev_pers::PreviousPeriods{Nothing,Nothing,Nothing},
+    cyclic_pers::CyclicPeriods,
     modeltype::EnergyModel,
 )
     return @expression(m, 0)
 end
 """
-    EMB.previous_level(
-        m,
-        n::CO2Storage,
-        prev_pers::EMB.PreviousPeriods{TS.AbstractStrategicPeriod, Nothing, Nothing},
-        cyclic_pers::EMB.CyclicPeriods,
-        modeltype::EnergyModel,
-    )
+    prev_pers::PreviousPeriods{<:TS.AbstractStrategicPeriod,Nothing,Nothing}
 
 The previous level in the first operational period in the first representative period in all
 strategic periods except for the first is set to the accumulated value in the previous
-strategic periods for a [`CO2Storage`](@ref) node.
+strategic periods.
 """
 function EMB.previous_level(
     m,
     n::CO2Storage,
-    prev_pers::EMB.PreviousPeriods{<:TS.AbstractStrategicPeriod,Nothing,Nothing},
-    cyclic_pers::EMB.CyclicPeriods,
+    prev_pers::PreviousPeriods{<:TS.AbstractStrategicPeriod,Nothing,Nothing},
+    cyclic_pers::CyclicPeriods,
     modeltype::EnergyModel,
 )
     return @expression(

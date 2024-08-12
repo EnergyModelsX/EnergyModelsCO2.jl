@@ -25,7 +25,6 @@ function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::Ener
     # Declaration of the required subsets
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
     p_stor = storage_resource(n)
-    𝒫ᵉᵐ = setdiff(EMB.res_sub(𝒫, ResourceEmit), [p_stor])
 
     # Constraint for the change in the level in a given operational period
     @constraint(m, [t ∈ 𝒯],
@@ -39,15 +38,10 @@ function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::Ener
             sum(m[:stor_level_Δ_op][n, t] * EMB.multiple(t_inv, t) for t ∈ t_inv)
     )
 
-    # Set the lower bound for the emissions in the storage node (:emissions_node) and to
+    # Set the lower bound for the operational change in the level (:stor_level_Δ_op) to
     # avoid that emissions larger than the flow into the storage.
-    # Fix all other emissions to a value of 0
     for t ∈ 𝒯
-        set_lower_bound(m[:emissions_node][n, t, p_stor], 0)
         set_lower_bound(m[:stor_level_Δ_op][n, t], 0)
-        for p_em ∈ 𝒫ᵉᵐ
-            fix(m[:emissions_node][n, t, p_em], 0,; force=true)
-        end
     end
 end
 

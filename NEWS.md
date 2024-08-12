@@ -22,6 +22,9 @@
   * Added the examples to the testing routine.
   * Added an exasmple for CO₂ capture retrofit.
   * Extended extensively the comments of the examples to improve understandability.
+* Incorporated a new structure for the documentation, including usage of @docs blocks and a structured approach
+* Provided separate pages for all introduced nodal types
+* Added a "how to contribute" page
 
 ## Version 0.6.0 (2024-05-28)
 

@@ -10,7 +10,8 @@ struct AccumulatingStrategic <: EMB.Accumulating end
 """
     CO2Source <: Source
 
-A CO₂ `Source` node. Its only difference from a RefSource is that is allows for CO₂ as outlet.
+A CO₂ `Source` node. Its only difference from a [`RefSource`](@extref EnergyModelsBase.RefSource)
+is that is allows for CO₂ as outlet.
 
 # Fields
 - **`id`** is the name/identifier of the node.
@@ -46,7 +47,7 @@ This node has an installed injection rate capacity through `charge` and a storag
 `level`.
 
 The storage level (accountet by the optimization variable `stor_level`) will
-increase during all strategic periods (sp), _i.e._, the stored resource can not be
+increase during all strategic periods (sp), *i.e.*, the stored resource can not be
 taken out of the storage.
 
 The initial storage level in a strategic period is set to the storage level at
@@ -55,7 +56,7 @@ is multiplied with the length of the sp when the initial storage level for the
 next sp is set.
 
 This is achieved through the parametric input [`AccumulatingStrategic`](@ref). This input
-is not a reqired input due to the utilization of a constructor.
+is not a required input due to the utilization of an inner constructor.
 
 # Fields
 - **`id`** is the name/identifyer of the node.
@@ -67,12 +68,8 @@ is not a reqired input due to the utilization of a constructor.
   fixed OPEX.
 - **`stor_res::Resource`** is the stored `Resource`.
 - **`input::Dict{<:Resource, <:Real}`** are the input `Resource`s with conversion value `Real`.
-- **`output::Dict{<:Resource, <:Real}`** are the generated `Resource`s with conversion value `Real`.
-  Requires that the stored resource `stor_res` is set here.
-- **`data::Array{<:Data}`** is the additional data (e.g. for investments).
-
-The fields `output::Dict{<:Resource, <:Real}` and `data::Array{<:Data}` are not required as
-constructors are introduced to facilitate constructing `CO2Storage` nodes.
+- **`data::Array{<:Data}`** is the additional data (e.g. for investments). The field `data`
+  is conditional through usage of a constructor.
 """
 struct CO2Storage{T} <: Storage{T}
     id::Any
@@ -84,6 +81,25 @@ struct CO2Storage{T} <: Storage{T}
     input::Dict{<:Resource,<:Real}
     output::Dict{<:Resource,<:Real}
     data::Array{<:Data}
+
+    function CO2Storage(
+        id::Any,
+        charge::EMB.UnionCapacity,
+        level::EMB.UnionCapacity,
+        stor_res::ResourceEmit,
+        input::Dict{<:Resource,<:Real},
+        data::Array{<:Data},
+    )
+        new{AccumulatingStrategic}(
+            id,
+            charge,
+            level,
+            stor_res,
+            input,
+            Dict(stor_res => 0),
+            data
+        )
+    end
 end
 function CO2Storage(
     id,
@@ -92,69 +108,13 @@ function CO2Storage(
     stor_res::Resource,
     input::Dict{<:Resource,<:Real},
 )
-    return CO2Storage{AccumulatingStrategic}(
+    return CO2Storage(
         id,
         charge,
         level,
         stor_res,
         input,
-        Dict(stor_res => 0),
         Data[],
-    )
-end
-function CO2Storage(
-    id,
-    charge::EMB.UnionCapacity,
-    level::EMB.UnionCapacity,
-    stor_res::Resource,
-    input::Dict{<:Resource,<:Real},
-    data::Array{<:Data},
-)
-    return CO2Storage{AccumulatingStrategic}(
-        id,
-        charge,
-        level,
-        stor_res,
-        input,
-        Dict(stor_res => 0),
-        data,
-    )
-end
-function CO2Storage(
-    id,
-    charge::EMB.UnionCapacity,
-    level::EMB.UnionCapacity,
-    stor_res::Resource,
-    input::Dict{<:Resource,<:Real},
-    output::Dict{<:Resource,<:Real},
-)
-    return CO2Storage{AccumulatingStrategic}(
-        id,
-        charge,
-        level,
-        stor_res,
-        input,
-        output,
-        Data[],
-    )
-end
-function CO2Storage(
-    id,
-    charge::EMB.UnionCapacity,
-    level::EMB.UnionCapacity,
-    stor_res::Resource,
-    input::Dict{<:Resource,<:Real},
-    output::Dict{<:Resource,<:Real},
-    data::Array{<:Data},
-)
-    return CO2Storage{AccumulatingStrategic}(
-        id,
-        charge,
-        level,
-        stor_res,
-        input,
-        output,
-        data,
     )
 end
 EMB.has_emissions(n::CO2Storage) = true
@@ -162,11 +122,11 @@ EMB.has_emissions(n::CO2Storage) = true
 """
     NetworkCCSRetrofit <: NetworkNode
 
-This node allows for retrofitting CCS to a `Network` node.
+This node allows for retrofitting CO₂ capture to a `NetworkNode`.
 
-It corresponds to a `RefNetwork` node in which the CO₂ is not emitted. Instead, it is
-transferred to a `co2_proxy` that is fed subsequently to a node in which it is either
-captured, or emitted.
+It corresponds to a [`RefNetworkNode`](@extref EnergyModelsBase.RefNetworkNode) node in
+which the CO₂ is not emitted. Instead, it is transferred to a `co2_proxy` that is fed
+subsequently to a node ([`CCSRetroFit`](@ref)) in which it is either captured, or emitted.
 
 # Fields
 - **`id`** is the name/identifier of the node.
@@ -176,7 +136,8 @@ captured, or emitted.
 - **`input::Dict{<:Resource, <:Real}`** are the input `Resource`s with conversion value `Real`.
 - **`output::Dict{<:Resource, <:Real}`** are the generated `Resource`s with conversion value `Real`.
   `co2_proxy` is required to be included to be available to have CO₂ capture applied properly.
-- **`co2_proxy::Resource`** is the instance of the `Resource` used for emissions.
+- **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
+  the CO₂ flow from the `NetworkCCSRetrofit` to the `CCSRetroFit` node.
 - **`data::Array{<:Data}`** is the additional data (e.g. for investments).
 """
 struct NetworkCCSRetrofit <: NetworkNode
@@ -193,19 +154,20 @@ end
 """
     CCSRetroFit <: Network
 
-This node allows for investments into CCS retrofit to a `NetworkCCSRetrofit` node. The
-capture process is implemented through the variable `cap_use`
+This node allows for investments into CO₂ capture retrofit to a [`NetworkCCSRetrofit`](@ref)
+node. The capture process is implemented through the variable `:cap_use`
 
 # Fields
 - **`id`** is the name/identifier of the node.
 - **`cap::TimeProfile`** is the installed capacity.
-- **`opex_var::TimeProfile`** is the variational operational costs per energy unit produced.
+- **`opex_var::TimeProfile`** is the variational operational costs per unit CO2 captured.
 - **`opex_fixed::TimeProfile`** is the fixed operational costs.
 - **`input::Dict{<:Resource, <:Real}`** are the input `Resource`s with conversion value `Real`.
 - **`output::Dict{<:Resource, <:Real}`** are the generated `Resource`s with conversion value `Real`.
   The CO₂ instance is required to be included to be available to have CO₂ capture applied
   properly.
-- **`co2_proxy::Resource`** is the instance of the `Resource` used for emissions.
+- **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
+  the CO₂ flow from the `NetworkCCSRetrofit` to the `CCSRetroFit` node.
 - **`data::Array{<:Data}`** is the additional data (e.g. for investments).
 """
 struct CCSRetroFit <: NetworkNode
@@ -220,11 +182,18 @@ struct CCSRetroFit <: NetworkNode
 end
 
 """
-    co2_proxy(n)
+    co2_proxy(n::EMB.Node)
 
-Extract the instance of the CO₂ proxy
+Extract the instance of the CO₂ proxy. This function is available for all node types but
+will provide an error if the node type does not support CO₂ capture retrofit.
 """
-co2_proxy(n) = n.co2_proxy
+function co2_proxy(n::EMB.Node)
+    if hasfield(typeof(n), :co2_proxy)
+        return n.co2_proxy
+    else
+        @error("Composite type $(typeof(n)) does not support CO₂ capture retrofit.")
+    end
+end
 
 """
     CaptureFlueGas{T} <: CaptureData{T}

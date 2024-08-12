@@ -1,8 +1,23 @@
 # [Public interface](@id sec_lib_public)
 
+## Node types
 
-```@autodocs
-Modules = [EnergyModelsCO2]
-Private = false
-Order = [:type, :function]
+### General nodes
+
+```@docs
+CO2Source
+CO2Storage
+```
+
+### CO₂ capture retrofit nodes
+
+```@docs
+NetworkCCSRetrofit
+CCSRetroFit
+```
+
+## `CaptureData` for `CCSRetrofit`
+
+```@docs
+CaptureFlueGas
 ```

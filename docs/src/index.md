@@ -16,11 +16,16 @@ and [TimeStruct](https://clean_export.pages.sintef.no/timestructures.jl/).
 
 It implements the following new technology nodes:
 
-1. a `Storage` node [`CO2Storage`](@ref),
-2. a `Network` node [`NetworkCCSRetrofit`](@ref) to which CCS can be retrofitted, and
-3. a `Network` node [`CCSRetroFit`](@ref) that corresponds to the unit that captures CCS.
+1. a `Source` node [`CO2Source`](@ref),
+2. a `Storage` node [`CO2Storage`](@ref),
+3. a `Network` node [`NetworkCCSRetrofit`](@ref) to which CCS can be retrofitted, and
+4. a `Network` node [`CCSRetroFit`](@ref) that corresponds to the unit that captures CCS.
 
-## Description of the nodes
+## Developed nodes
+
+### [`CO2Source`](@ref)
+
+The main difference from a regular `RefSource`-node is that the `CO2Source` allows for the CO₂ instance to be an output
 
 ### [`CO2Storage`](@ref)
 
@@ -42,16 +47,41 @@ The CO₂ is captured, if a given capacity is installed.
 However, it only captures the proxy CO₂ resource and not process or energy use related emissions.
 
 ## Manual outline
+
 ```@contents
 Pages = [
     "manual/quick-start.md",
+    "manual/NEWS.md",
 ]
+Depth = 1
+```
+
+## Description of the nodes
+
+```@contents
+Pages = [
+    "nodes/source.md",
+    "nodes/storage.md",
+    "nodes/retrofit.md",
+]
+Depth = 1
+```
+
+## How to guides
+
+```@contents
+Pages = [
+    "how-to/contribute.md",
+]
+Depth = 1
 ```
 
 ## Library outline
+
 ```@contents
 Pages = [
     "library/public.md",
     "library/internals.md",
 ]
+Depth = 1
 ```
