@@ -15,9 +15,9 @@ These technologies are
 `RefNetworkNodeRetrofit` and `CCSRetroFit` have to be coupled to each other for proper functioning as they require a proxy resource for CO2.
 Further information can be found in the _[corresponding documentation](https://energymodelsx.github.io/EnergyModelsCO2.jl/stable/)_.
 
-> **Note**
->
-> This is an internal pre-release not intended for distribution outside the project consortium.
+> **Note**:
+> The stable docs are in the current version not working due to a mistake in the deploy.
+> It will be updated in the next release.
 
 ## Usage
 

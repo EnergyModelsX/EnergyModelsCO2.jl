@@ -2,6 +2,11 @@
 
 ## Unversioned
 
+* Adjusted documentation to deploy to the proper site.
+* Removed pre-release statements.
+
+## Version 0.7.0 (2024-08-15)
+
 ### Feature
 
 * Added support for `CaptureProcessEmissions` for `CCSRetroFit` nodes.
