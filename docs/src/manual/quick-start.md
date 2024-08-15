@@ -15,10 +15,3 @@
 >    ] add EnergyModelsCO2
 >    ```
 >
-
-!!! note
-    If you receive the error that `EnergyModelsCO2` is not yet registered, you have to add the package using the GitHub repository through
-    ```
-    ] add https://github.com/EnergyModelsX/EnergyModelsCO2
-    ```
-    Once the package is registered, this is not required.
