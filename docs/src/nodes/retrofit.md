@@ -58,9 +58,11 @@ The standard fields are given as:
   All values have to be non-negative.
   !!! info "Meaning in boths nodes"
       - [`RefNetworkNodeRetrofit`](@ref):\
-        Requires the incorporation of the CO₂ proxy resource in the `output` dictionary, although the exact value is not relevant.
+        No special meaning.
+        The CO₂ proxy resource is automatically included in the `output` dictionary through providing additional methods to `EMB.outputs`.
       - [`CCSRetroFit`](@ref):\
-        Requires the incorporation of the CO₂ proxy resource in the `input` dictionary and the CO₂ resource in the `output` dictionary, although the exact values are not relevant.
+        The CO₂ proxy resource is automatically included in the `input` dictionary through providing additional methods to `EMB.inputs`.
+        Requires the incorporation of the  CO₂ resource in the `output` dictionary, although the exact value is not relevant.
         It is furthermore possible to specify additional reenergy required for capturing CO₂ using a conversion factor (*e.g.*, MWh/t CO₂).
 - **`data::Vector{Data}`**:\
   An entry for providing additional data to the model.
@@ -396,7 +398,7 @@ This constraint is given by:
 
 ```math
 \texttt{flow\_in}[n, t, p] =
-outputs(n, p) \times \texttt{cap\_use}[n, t]
+inputs(n, p) \times \texttt{cap\_use}[n, t]
 \qquad \forall p \in inputs(n) \setminus \{co2\_proxy(n)\}
 ```
 
