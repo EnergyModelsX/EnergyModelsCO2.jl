@@ -143,6 +143,8 @@ It corresponds to a [`RefNetworkNode`](@extref EnergyModelsBase.RefNetworkNode) 
 which the CO₂ is not emitted. Instead, it is transferred to a `co2_proxy` that is fed
 subsequently to a node ([`CCSRetroFit`](@ref)) in which it is either captured, or emitted.
 
+The `co2_proxy` does not have to be specified as `output` resource.
+
 # Fields
 - **`id`** is the name/identifier of the node.
 - **`cap::TimeProfile`** is the installed capacity.
@@ -167,10 +169,27 @@ struct RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
 end
 
 """
+    EMB.outputs(n::CCSRetroFit)
+
+When the node is a [`NetworkNodeWithRetrofit`](@ref), it returns the `co2_proxy` resource in
+addition to the keys of the `output` dictionary.
+"""
+EMB.outputs(n::NetworkNodeWithRetrofit) = unique(append!(Resource[n.co2_proxy], keys(n.output)))
+"""
+    EMB.outputs(n::NetworkNodeWithRetrofit, p::Resource)
+
+When the node is a [`NetworkNodeWithRetrofit`](@ref), it returns the value of `output`
+resource `p`. If `p` is the `co2_proxy` resource, it returns 0.
+"""
+EMB.outputs(n::NetworkNodeWithRetrofit, p::Resource) = haskey(n.output, p) ? n.output[p] : 0
+
+"""
     CCSRetroFit <: Network
 
 This node allows for investments into CO₂ capture retrofit to a [`RefNetworkNodeRetrofit`](@ref)
 node. The capture process is implemented through the variable `:cap_use`
+
+The `co2_proxy` does not have to be specified as `input` resource.
 
 # Fields
 - **`id`** is the name/identifier of the node.
@@ -195,6 +214,21 @@ struct CCSRetroFit <: NetworkNode
     co2_proxy::Resource
     data::Array{<:Data}
 end
+
+"""
+    EMB.inputs(n::CCSRetroFit)
+
+When the node is a [`CCSRetroFit`](@ref), it returns the `co2_proxy` resource in addition to
+the keys of the `input` dictionary.
+"""
+EMB.inputs(n::CCSRetroFit) = unique(append!(Resource[n.co2_proxy], keys(n.input)))
+"""
+    EMB.inputs(n::CCSRetroFit, p::Resource)
+
+When the node is a [`CCSRetroFit`](@ref), it returns the value of `input` resource `p`.
+If `p` is the `co2_proxy` resource, it returns 0.
+"""
+EMB.inputs(n::CCSRetroFit, p::Resource) = haskey(n.input, p) ? n.input[p] : 0
 
 """
     co2_proxy(n::EMB.Node)

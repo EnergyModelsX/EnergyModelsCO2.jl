@@ -1,6 +1,13 @@
 
 """
-    EMB.constraints_data(m, n::NetworkNodeWithRetrofit, 𝒯, 𝒫, modeltype, data::EmissionsData)
+    EMB.constraints_data(
+    m,
+    n::NetworkNodeWithRetrofit,
+    𝒯,
+    𝒫,
+    modeltype::EnergyModel,
+    data::EmissionsData
+)
 
 Constraints functions for calculating both the emissions and amount of CO₂ captured in the
 process when CO₂ capture is included as retrofit. It works similar to the approach of
@@ -14,7 +21,7 @@ function EMB.constraints_data(
     n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureProcessEnergyEmissions,
 )
 
@@ -49,7 +56,7 @@ function EMB.constraints_data(
     n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureEnergyEmissions,
 )
 
@@ -85,7 +92,7 @@ function EMB.constraints_data(
     n::NetworkNodeWithRetrofit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureProcessEmissions,
 )
 
@@ -118,7 +125,7 @@ function EMB.constraints_data(
 end
 
 """
-    EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::EmissionsData)
+    EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::EmissionsData)
 
 Constraints functions for calculating both the emissions and amount of CO₂ captured in the
 CO₂ capture unit.
@@ -141,14 +148,14 @@ function EMB.constraints_data(
     n::CCSRetroFit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureProcessEnergyEmissions,
 )
 
     # Declaration of the required subsets.
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
-    𝒫ⁱⁿ = inputs(n)
+    𝒫ⁱⁿ = setdiff(inputs(n), [CO2_proxy])
     𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
@@ -193,14 +200,14 @@ function EMB.constraints_data(
     n::CCSRetroFit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureEnergyEmissions,
 )
 
     # Declaration of the required subsets.
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
-    𝒫ⁱⁿ = inputs(n)
+    𝒫ⁱⁿ = setdiff(inputs(n), [CO2_proxy])
     𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
@@ -244,14 +251,14 @@ function EMB.constraints_data(
     n::CCSRetroFit,
     𝒯,
     𝒫,
-    modeltype,
+    modeltype::EnergyModel,
     data::CaptureProcessEmissions,
 )
 
     # Declaration of the required subsets.
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
-    𝒫ⁱⁿ = inputs(n)
+    𝒫ⁱⁿ = setdiff(inputs(n), [CO2_proxy])
     𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture
@@ -289,12 +296,12 @@ function EMB.constraints_data(
             )
     )
 end
-function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype, data::CaptureFlueGas)
+function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::CaptureFlueGas)
 
     # Declaration of the required subsets.
     CO2 = co2_instance(modeltype)
     CO2_proxy = co2_proxy(n)
-    𝒫ⁱⁿ = inputs(n)
+    𝒫ⁱⁿ = setdiff(inputs(n), [CO2_proxy])
     𝒫ᵉᵐ = setdiff(filter(EMB.is_resource_emit, 𝒫), [CO2])
 
     # Calculate the total amount of CO2 to be considered for capture

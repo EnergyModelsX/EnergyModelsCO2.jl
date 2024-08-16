@@ -26,6 +26,8 @@ EnergyModelsBase.constraints_data
 
 ```@docs
 EnergyModelsBase.previous_level
+EnergyModelsBase.inputs
+EnergyModelsBase.outputs
 ```
 
 ## Check methods

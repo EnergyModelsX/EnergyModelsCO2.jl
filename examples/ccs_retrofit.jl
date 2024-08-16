@@ -74,9 +74,9 @@ function generate_co2_retrofit_example_data()
             FixedProfile(5.5),          # Variable OPEX in €/MWh
             FixedProfile(0),            # Fixed OPEX in €/MW/a
             Dict(NG => 1.66),           # Input to the node with input ratio
-            Dict(Power => 1, CO2_proxy => 0), # Output from the node with input ratio
-            # Line above: CO2_proxy is required as output for variable definition, but the
-            # value does not matter
+            Dict(Power => 1),           # Output from the node with input ratio
+            # Line above: CO2_proxy does not have to be specified as we add a method to
+            # `EMB.outputs`
             CO2_proxy,                  # Instance of the `CO2_proxy`
             Data[CaptureEnergyEmissions(1.0)], # Capture data for the node.
             # All energy emissions are captured
@@ -87,8 +87,7 @@ function generate_co2_retrofit_example_data()
             FixedProfile(0),            # Variable OPEX in €/t
             FixedProfile(0),            # Fixed OPEX in €/(t/h)/a
             Dict(NG => 1.0, CO2_proxy => 0), # Input to the node with input ratio
-            # Line above: CO2_proxy is required as input for variable definition, but the
-            # value does not matter
+            # Line above: CO2_proxy is not required as input as we utilize an inner constructor
             Dict(CO2 => 0),
             # Line above: CO2 is required as input for variable definition, but the
             # value does not matter
