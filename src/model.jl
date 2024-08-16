@@ -76,8 +76,8 @@ Set all constraints for a `CCSRetroFit`.
 function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Declaration of the required subsets
-    𝒫ⁱⁿ = inputs(n)
     CO2_proxy = co2_proxy(n)
+    𝒫ⁱⁿ = setdiff(inputs(n), [CO2_proxy])
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
 
     # Iterate through all data and set up the constraints corresponding to the data
@@ -87,7 +87,7 @@ function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Inlet constraints for all other resources
     # The value for `CO2_proxy` is calculated in `constraints_data`.
-    @constraint(m, [t ∈ 𝒯, p ∈ EMB.res_not(𝒫ⁱⁿ, CO2_proxy)],
+    @constraint(m, [t ∈ 𝒯, p ∈ 𝒫ⁱⁿ],
         m[:flow_in][n, t, p] == m[:cap_use][n, t] * inputs(n, p)
     )
 

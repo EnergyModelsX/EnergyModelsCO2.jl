@@ -20,7 +20,7 @@ function CO2_retrofit(emissions_data; process_unit=nothing)
             FixedProfile(5.5),
             FixedProfile(0),
             Dict(NG => 2),
-            Dict(Power => 1, CO2_proxy => 0),
+            Dict(Power => 1),
             CO2_proxy,
             [emissions_data["process"]],
         )
@@ -31,7 +31,7 @@ function CO2_retrofit(emissions_data; process_unit=nothing)
         FixedProfile(5),
         FixedProfile(0),
         FixedProfile(0),
-        Dict(NG => 0.05, CO2_proxy => 0),
+        Dict(NG => 0.05),
         Dict(CO2 => 0),
         CO2_proxy,
         [emissions_data["ccs"]],
@@ -351,7 +351,7 @@ end
         FixedProfile(5.5),
         FixedProfile(0),
         Dict(NG => 2),
-        Dict(Power => 1, CO2_proxy => 0),
+        Dict(Power => 1),
         CO2_proxy,
         [CaptureEnergyEmissions(Dict(CO2 => 0.1), 0.9)],
     )
