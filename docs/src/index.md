@@ -1,8 +1,6 @@
 # EnergyModelsCO2
 
-Documentation for [EnergyModelsCO2](https://github.com/EnergyModelsX/EnergyModelsCO2).
-
-This package depends on [EnergyModelsBase](https://energymodelsx.github.io/EnergyModelsBase.jl/stable/) and [TimeStruct](https://sintefore.github.io/TimeStruct.jl/stable/).
+This Julia package implements three new nodes with corresponding JuMP variables and constraints, extending the package [`EnergyModelsBase`](https://energymodelsx.github.io/EnergyModelsBase.jl/) with more detailed representation of technologies within the CO₂ capture, transport, and storage value chain.
 
 It implements the following new technology nodes:
 
@@ -10,6 +8,8 @@ It implements the following new technology nodes:
 2. a `Storage` node [`CO2Storage`](@ref),
 3. a `Network` node [`RefNetworkNodeRetrofit`](@ref) to which CCS can be retrofitted, and
 4. a `Network` node [`CCSRetroFit`](@ref) that corresponds to the unit that captures CCS.
+
+The new introduced node types are also documented on the individual node pages.
 
 ## Developed nodes
 

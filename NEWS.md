@@ -1,5 +1,10 @@
 # Release Notes
 
+## Version 0.7.2 (2024-09-02)
+
+* Dependency increase for `EnergyModelsBase` as the changes do not directly affect `EnergyModelsCO2`.
+* Adjustment of the interlinks to the changes in the structure of `EnergyModelsBase`.
+
 ## Version 0.7.1 (2024-08-16)
 
 * Removed requirement for specifying the `co2_proxy` resource as output of the `NetworkNodeWithRetrofit` node and input to the `CCSRetroFit` node through addding methods for `EMB.outputs` and `EMB.inputs`.
