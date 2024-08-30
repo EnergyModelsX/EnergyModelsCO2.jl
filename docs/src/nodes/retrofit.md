@@ -1,6 +1,6 @@
 # [CO₂ capture retrofit](@id nodes-CCS_retrofit)
 
-A specific CO₂ source node is required as the default implementation of a [`RefSource`](@extref EnergyModelsBase.RefSource) does not allow for the CO₂ instance to be an output, as declared in the function [`constraints_flow_out`](@extref EnergyModelsBase constraint_functions).
+A specific CO₂ source node is required as the default implementation of a [`RefSource`](@extref EnergyModelsBase.RefSource) does not allow for the CO₂ instance to be an output, as declared in the function [`constraints_flow_out`](@extref EnergyModelsBase man-con-flow).
 This is due to the implementation using [`CaptureData`](@extref EnergyModelsBase.CaptureData) in which the CO₂ oulet flow is calculated through the implementation of the capture rate.
 
 Hence, it is necessary to implement a CO₂ source node if one wants to model only a CO₂ source.
@@ -41,11 +41,11 @@ The standard fields are given as:
       - [`CCSRetroFit`](@ref):\
         The capacity corresponds to the CO₂ flow rate handling capacity, **not** the CO₂ capture capacity
 - **`opex_var::TimeProfile`**:\
-  The variable operational expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase var_cap).
+  The variable operational expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase man-opt_var-cap).
   Hence, it is directly related to the specified `output` ratios.
   The variable operating expenses can be provided as `OperationalProfile` as well.
 - **`opex_fixed::TimeProfile`**:\
-  The fixed operating expenses are relative to the installed capacity (through the field `cap`) and the chosen duration of a strategic period as outlined on *[Utilize `TimeStruct`](@extref EnergyModelsBase utilize_timestruct)*.\
+  The fixed operating expenses are relative to the installed capacity (through the field `cap`) and the chosen duration of a strategic period as outlined on *[Utilize `TimeStruct`](@extref EnergyModelsBase how_to-utilize_TS)*.\
   It is important to note that you can only use `FixedProfile` or `StrategicProfile` for the fixed OPEX, but not `RepresentativeProfile` or `OperationalProfile`.
   In addition, all values have to be non-negative.
   !!! info "Meaning in boths nodes"
@@ -104,15 +104,15 @@ with paranthesis.
 
 #### [Standard variables](@id nodes-CCS_retrofit-math-var-stand)
 
-Both introduced nodes utilize all standard variables from the `RefNetworkNode`, as described on the page *[Optimization variables](@extref EnergyModelsBase optimization_variables)*.
+Both introduced nodes utilize all standard variables from the `RefNetworkNode`, as described on the page *[Optimization variables](@extref EnergyModelsBase man-opt_var)*.
 The variables include:
 
-- [``\texttt{opex\_var}``](@extref EnergyModelsBase var_opex)
-- [``\texttt{opex\_fixed}``](@extref EnergyModelsBase var_opex)
-- [``\texttt{cap\_use}``](@extref EnergyModelsBase var_cap)
-- [``\texttt{cap\_inst}``](@extref EnergyModelsBase var_cap)
-- [``\texttt{flow\_in}``](@extref EnergyModelsBase var_flow)
-- [``\texttt{flow\_out}``](@extref EnergyModelsBase var_flow)
+- [``\texttt{opex\_var}``](@extref EnergyModelsBase man-opt_var-opex)
+- [``\texttt{opex\_fixed}``](@extref EnergyModelsBase man-opt_var-opex)
+- [``\texttt{cap\_use}``](@extref EnergyModelsBase man-opt_var-cap)
+- [``\texttt{cap\_inst}``](@extref EnergyModelsBase man-opt_var-cap)
+- [``\texttt{flow\_in}``](@extref EnergyModelsBase man-opt_var-flow)
+- [``\texttt{flow\_out}``](@extref EnergyModelsBase man-opt_var-flow)
 
 #### [Additional variables](@id nodes-CCS_retrofit-math-add)
 
@@ -126,7 +126,7 @@ In addition, all constraints are valid ``\forall t \in T`` (that is in all opera
 
 #### [Standard constraints](@id nodes-CCS_retrofit-math-con-stand)
 
-Both introduced nodes utilize in general the standard constraints described on *[Constraint functions](@extref EnergyModelsBase constraint_functions)*.
+Both introduced nodes utilize in general the standard constraints described on *[Constraint functions](@extref EnergyModelsBase man-con)*.
 These standard constraints are:
 
 - `constraints_capacity`:
@@ -171,7 +171,7 @@ These standard constraints are:
   ```
 
   !!! tip "Why do we use `first()`"
-      The variable ``\texttt{cap\_inst}`` ise declared over all operational periods (see the section on *[Capacity variables](@extref EnergyModelsBase var_cap)* for further explanations).
+      The variable ``\texttt{cap\_inst}`` ise declared over all operational periods (see the section on *[Capacity variables](@extref EnergyModelsBase man-opt_var-cap)* for further explanations).
       Hence, we use the function ``first(t_{inv})`` to retrieve the installed capacity in the first operational period of a given strategic period ``t_{inv}`` in the function `constraints_opex_fixed`.
 
 - `constraints_opex_var`:
@@ -194,7 +194,7 @@ outputs(n, p) \times \texttt{cap\_use}[n, t]
 \qquad \forall p \in outputs(n) \setminus \{co2\_proxy(n)\}
 ```
 
-The introduction of the CO₂ capture unit as retrofit option requires introducing new methods for the function `constraints_data` for all [`CaptureData`](@extref EnergyModelsBase.CaptureData) as described on *[Data functions](@extref EnergyModelsBase data_functions)*.
+The introduction of the CO₂ capture unit as retrofit option requires introducing new methods for the function `constraints_data` for all [`CaptureData`](@extref EnergyModelsBase.CaptureData) as described on *[Data functions](@extref EnergyModelsBase man-data_fun-emissions)*.
 In all methods, the process emissions of the other [`ResourceEmit`](@extref EnergyModelsBase.ResourceEmit)s, that is all emissions resources except for CO₂, are calculated as
 
 ```math
