@@ -53,11 +53,12 @@ makedocs(;
         ],
         "Library" => Any[
             "Public" => "library/public.md",
-            "Internals" => map(
-                s -> "library/internals/$(s)",
-                sort(readdir(joinpath(@__DIR__, "src/library/internals")))
-            ),
-        ]
+            "Internals" => String[
+                "library/internals/types.md",
+                "library/internals/methods-fields.md",
+                "library/internals/methods-EMB.md",
+            ],
+        ],
     ],
     plugins=[links],
 )

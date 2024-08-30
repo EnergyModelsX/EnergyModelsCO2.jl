@@ -2,10 +2,6 @@
 
 Documentation for [EnergyModelsCO2](https://github.com/EnergyModelsX/EnergyModelsCO2).
 
-```@docs
-EnergyModelsCO2
-```
-
 This package depends on [EnergyModelsBase](https://energymodelsx.github.io/EnergyModelsBase.jl/stable/) and [TimeStruct](https://sintefore.github.io/TimeStruct.jl/stable/).
 
 It implements the following new technology nodes:
@@ -76,7 +72,9 @@ Depth = 1
 ```@contents
 Pages = [
     "library/public.md",
-    "library/internals.md",
+    "library/internals/types.md",
+    "library/internals/methods-fields.md",
+    "library/internals/methods-EMB.md",
 ]
 Depth = 1
 ```
