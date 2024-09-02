@@ -86,7 +86,7 @@ The variables include:
 
 ### [Constraints](@id nodes-co2_source-math-con)
 
-The following sections omit the direction inclusion of the vector of CO₂ source nodes.
+The following sections omit the direct inclusion of the vector of CO₂ source nodes.
 Instead, it is implicitly assumed that the constraints are valid ``\forall n ∈ N^{\text{CO}_2\_source}`` for all [`CO2Source`](@ref) types if not stated differently.
 In addition, all constraints are valid ``\forall t \in T`` (that is in all operational periods) or ``\forall t_{inv} \in T^{Inv}`` (that is in all strategic periods).
 

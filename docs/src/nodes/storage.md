@@ -32,6 +32,7 @@ The standard fields are given as:
   !!! note "Permitted values for storage parameters in `charge` and `level`"
       If the node should contain investments through the application of [`EnergyModelsInvestments`](https:// energymodelsx.github.io/EnergyModelsInvestments.jl/stable/), it is important to note that you can only use `FixedProfile` or `StrategicProfile` for the capacity, but not `RepresentativeProfile` or `OperationalProfile`.
       Similarly, you can only use `FixedProfile` or `StrategicProfile` for the fixed OPEX, but not `RepresentativeProfile` or `OperationalProfile`.
+      The variable operating expenses can be provided as `OperationalProfile` as well.
       In addition, all capacity and fixed OPEX values have to be non-negative.
 - **`stor_res::ResourceEmit`**:\
   The `stor_res` is the stored [`Resource`](@extref EnergyModelsBase.Resource).
@@ -72,7 +73,7 @@ with paranthesis.
 
 #### [Standard variables](@id nodes-co2_storage-math-var-stand)
 
-The CO₂ storage node types utilize all standard variables from the `RefStorage`, as described on the page *[Optimization variables](@extref EnergyModelsBase man-opt_var)*.
+The CO₂ storage node types utilize all standard variables from `RefStorage`, as described on the page *[Optimization variables](@extref EnergyModelsBase man-opt_var)*.
 The variables include:
 
 - [``\texttt{opex\_var}``](@extref EnergyModelsBase man-opt_var-opex)
@@ -87,7 +88,7 @@ The variables include:
 - [``\texttt{stor\_level\_Δ\_rp}``](@extref EnergyModelsBase man-opt_var-cap) if the `TimeStruct` includes `RepresentativePeriods`
 - [``\texttt{emissions\_node}``](@extref EnergyModelsBase man-opt_var-emissions)
 
-Neither ``\texttt{stor\_discharge\_inst}`` nor ``\texttt{stor\_discharge\_use}`` are created for `CO2Storage` nodes as we do not specify a `discharge` field
+Neither ``\texttt{stor\_discharge\_inst}`` nor ``\texttt{stor\_discharge\_use}`` are created for `CO2Storage` nodes as we do not specify a `discharge` field.
 
 #### [Additional variables](@id nodes-co2_storage-math-add)
 
@@ -96,11 +97,11 @@ Hence, a single additional variable is declared through dispatching on the metho
 
 - ``\texttt{stor\_level\_Δ\_sp}[n, t_{inv}]``: Stored CO₂ in storage node ``n`` in strategic period ``t_{inv}`` with a typical unit of t/a.\
   The stored CO₂ in each strategic period is a rate specifying how much CO₂ is stored within a given strategic period.
-  Hence, it is important to consider the used duration for strategic periods (see *[Utilize `TimeStruct`](@extref EnergyModelsBase how_to-utilize_TS)* for an explanation)
+  Hence, it is important to consider the used duration for strategic periods (see *[Utilize `TimeStruct`](@extref EnergyModelsBase how_to-utilize_TS)* for an explanation).
 
 ### [Constraints](@id nodes-co2_storage-math-con)
 
-The following sections omit the direction inclusion of the vector of CO₂ storage nodes.
+The following sections omit the direct inclusion of the vector of CO₂ storage nodes.
 Instead, it is implicitly assumed that the constraints are valid ``\forall n ∈ N^{\text{CO}_2\_storage}`` for all [`CO2Source`](@ref) types if not stated differently.
 In addition, all constraints are valid ``\forall t \in T`` (that is in all operational periods) or ``\forall t_{inv} \in T^{Inv}`` (that is in all strategic periods).
 
@@ -132,7 +133,7 @@ These standard constraints are:
   \begin{aligned}
   \texttt{opex\_fixed}&[n, t_{inv}] = \\ &
     opex\_fixed(level(n), t_{inv}) \times \texttt{stor\_level\_inst}[n, first(t_{inv})] + \\ &
-    opex\_fixed(charge(n), t_{inv}) \times \texttt{stor\_charge\_inst}[n, first(t_{inv})] +
+    opex\_fixed(charge(n), t_{inv}) \times \texttt{stor\_charge\_inst}[n, first(t_{inv})]
   \end{aligned}
   ```
 
@@ -146,7 +147,7 @@ These standard constraints are:
   \begin{aligned}
   \texttt{opex\_var}&[n, t_{inv}] = \\ \sum_{t \in t_{inv}}&
     opex\_var(level(n), t) \times \texttt{stor\_level}[n, t] \times EMB.multiple(t_{inv}, t) + \\ &
-    opex\_var(charge(n), t) \times \texttt{stor\_charge\_use}[n, t] \times EMB.multiple(t_{inv}, t) +
+    opex\_var(charge(n), t) \times \texttt{stor\_charge\_use}[n, t] \times EMB.multiple(t_{inv}, t)
   \end{aligned}
   ```
 
@@ -223,7 +224,7 @@ The level constraints are in general slightly more complex to understand.
 The overall structure is outlined on *[Constraint functions](@extref EnergyModelsBase man-con-stor_level)*.
 The level constraints are called through the function `constraints_level` which then calls additional functions depending on the chosen time structure (whether it includes representative periods and/or operational scenarios) and the chosen *[storage behaviour](@extref EnergyModelsBase lib-pub-nodes-stor_behav)*.
 
-The CO₂ storage node utilizes the majority of the concepts from `EnergyModelsBase` but requires adjustment for both constraining the variable ``\texttt{stor\_level\_Δ\_sp}`` and specify how the storage node has to behave in the first operational period (of the first representative period) of a strategic period.
+The CO₂ storage node utilizes the majority of the concepts from `EnergyModelsBase` but requires adjustments for both constraining the variable ``\texttt{stor\_level\_Δ\_sp}`` and specifying how the storage node has to behave in the first operational period (of the first representative period) of a strategic period.
 This is achieved through dispatching on the functions `constraints_level_aux` and `previous_level`.
 
 The constraints introduced in `constraints_level_aux` are given by

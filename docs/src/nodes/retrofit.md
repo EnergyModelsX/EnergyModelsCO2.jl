@@ -120,7 +120,7 @@ Both introduced nodes do not add additional variables.
 
 ### [Constraints](@id nodes-CCS_retrofit-math-con)
 
-The following sections omit the direction inclusion of the vector of any node.
+The following sections omit the direct inclusion of the vector of any node.
 Instead, it is implicitly assumed that the constraints are valid ``\forall n ∈ N`` for all [`RefNetworkNodeRetrofit`](@ref) or [`CCSRetroFit`](@ref) types if not stated differently.
 In addition, all constraints are valid ``\forall t \in T`` (that is in all operational periods) or ``\forall t_{inv} \in T^{Inv}`` (that is in all strategic periods).
 
