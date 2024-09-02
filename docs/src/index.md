@@ -41,6 +41,7 @@ However, it only captures the proxy CO₂ resource and not process or energy use
 ```@contents
 Pages = [
     "manual/quick-start.md",
+    "manual/simple-example.md",
     "manual/NEWS.md",
 ]
 Depth = 1
