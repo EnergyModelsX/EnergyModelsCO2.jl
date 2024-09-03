@@ -1,15 +1,21 @@
-# [Public interface](@id sec_lib_public)
+# [Public interface](@id lib-pub)
 
-## Node types
+## [Module](@id lib-pub-module)
 
-### General nodes
+```@docs
+EnergyModelsCO2
+```
+
+## [Node types](@id lib-pub-node)
+
+### [General nodes](@id lib-pub-node-gen)
 
 ```@docs
 CO2Source
 CO2Storage
 ```
 
-### CO₂ capture retrofit nodes
+### [CO₂ capture retrofit nodes](@id lib-pub-node-retrofit)
 
 ```@docs
 NetworkNodeWithRetrofit
@@ -17,14 +23,22 @@ RefNetworkNodeRetrofit
 CCSRetroFit
 ```
 
-### Legacy constructors
+### [Legacy constructors](@id lib-pub-node-legacy)
 
 ```@docs
 NetworkCCSRetrofit
 ```
 
-## `CaptureData` for `CCSRetrofit`
+## [Data types](@id lib-pub-data)
+
+### [`CaptureData` for `CCSRetrofit`](@id lib-pub-data-em_data)
 
 ```@docs
 CaptureFlueGas
+```
+
+### [Legacy constructors](@id lib-pub-node-data-legacy)
+
+```@docs
+CaptureNone
 ```

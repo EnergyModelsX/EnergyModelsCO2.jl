@@ -24,7 +24,7 @@ export CO2Source, CO2Storage
 export NetworkNodeWithRetrofit, RefNetworkNodeRetrofit, CCSRetroFit
 
 # Export the new `CaptureData`
-export CaptureFlueGas
+export CaptureNone, CaptureFlueGas
 
 # Export the legacy constructor
 export NetworkCCSRetrofit

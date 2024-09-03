@@ -1,6 +1,6 @@
 # [CO₂ source node](@id nodes-co2_source)
 
-A specific CO₂ source node is required as the default implementation of a [`RefSource`](@extref EnergyModelsBase.RefSource) does not allow for the CO₂ instance to be an output, as declared in the function [`constraints_flow_out`](@extref EnergyModelsBase constraint_functions).
+A specific CO₂ source node is required as the default implementation of a [`RefSource`](@extref EnergyModelsBase.RefSource) does not allow for the CO₂ instance to be an output, as declared in the function [`constraints_flow_out`](@extref EnergyModelsBase man-con-flow).
 This is due to the implementation using [`CaptureData`](@extref EnergyModelsBase.CaptureData) in which the CO₂ oulet flow is calculated through the implementation of the capture rate.
 
 Hence, it is necessary to implement a CO₂ source node if one wants to model only a CO₂ source.
@@ -22,11 +22,11 @@ The standard fields are given as:
   If the node should contain investments through the application of [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/stable/), it is important to note that you can only use `FixedProfile` or `StrategicProfile` for the capacity, but not `RepresentativeProfile` or `OperationalProfile`.
   In addition, all values have to be non-negative.
 - **`opex_var::TimeProfile`**:\
-  The variable operational expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase var_cap).
+  The variable operational expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase man-opt_var-cap).
   Hence, it is directly related to the specified `output` ratios.
   The variable operating expenses can be provided as `OperationalProfile` as well.
 - **`opex_fixed::TimeProfile`**:\
-  The fixed operating expenses are relative to the installed capacity (through the field `cap`) and the chosen duration of a strategic period as outlined on *[Utilize `TimeStruct`](@extref EnergyModelsBase utilize_timestruct)*.\
+  The fixed operating expenses are relative to the installed capacity (through the field `cap`) and the chosen duration of a strategic period as outlined on *[Utilize `TimeStruct`](@extref EnergyModelsBase how_to-utilize_TS)*.\
   It is important to note that you can only use `FixedProfile` or `StrategicProfile` for the fixed OPEX, but not `RepresentativeProfile` or `OperationalProfile`.
   In addition, all values have to be non-negative.
 - **`output::Dict{<:Resource, <:Real}`**:\
@@ -68,15 +68,15 @@ with paranthesis.
 
 #### [Standard variables](@id nodes-co2_source-math-var-stand)
 
-The CO₂ source node types utilize all standard variables from the `RefSource`, as described on the page *[Optimization variables](@extref EnergyModelsBase optimization_variables)*.
+The CO₂ source node types utilize all standard variables from the `RefSource`, as described on the page *[Optimization variables](@extref EnergyModelsBase man-opt_var)*.
 The variables include:
 
-- [``\texttt{opex\_var}``](@extref EnergyModelsBase var_opex)
-- [``\texttt{opex\_fixed}``](@extref EnergyModelsBase var_opex)
-- [``\texttt{cap\_use}``](@extref EnergyModelsBase var_cap)
-- [``\texttt{cap\_inst}``](@extref EnergyModelsBase var_cap)
-- [``\texttt{flow\_out}``](@extref EnergyModelsBase var_flow)
-- [``\texttt{emissions\_node}``](@extref EnergyModelsBase var_emission) if `EmissionsData` is added to the field `data`.
+- [``\texttt{opex\_var}``](@extref EnergyModelsBase man-opt_var-opex)
+- [``\texttt{opex\_fixed}``](@extref EnergyModelsBase man-opt_var-opex)
+- [``\texttt{cap\_use}``](@extref EnergyModelsBase man-opt_var-cap)
+- [``\texttt{cap\_inst}``](@extref EnergyModelsBase man-opt_var-cap)
+- [``\texttt{flow\_out}``](@extref EnergyModelsBase man-opt_var-flow)
+- [``\texttt{emissions\_node}``](@extref EnergyModelsBase man-opt_var-emissions) if `EmissionsData` is added to the field `data`.
   Note that CO₂ source nodes are not compatible with `CaptureData`.
   Hence, you can only provide [`EmissionsProcess`](@extref EnergyModelsBase.EmissionsProcess) to the node.
 
@@ -86,13 +86,13 @@ The variables include:
 
 ### [Constraints](@id nodes-co2_source-math-con)
 
-The following sections omit the direction inclusion of the vector of CO₂ source nodes.
+The following sections omit the direct inclusion of the vector of CO₂ source nodes.
 Instead, it is implicitly assumed that the constraints are valid ``\forall n ∈ N^{\text{CO}_2\_source}`` for all [`CO2Source`](@ref) types if not stated differently.
 In addition, all constraints are valid ``\forall t \in T`` (that is in all operational periods) or ``\forall t_{inv} \in T^{Inv}`` (that is in all strategic periods).
 
 #### [Standard constraints](@id nodes-co2_source-math-con-stand)
 
-CO₂ source nodes utilize in general the standard constraints described on *[Constraint functions](@extref EnergyModelsBase constraint_functions)*.
+CO₂ source nodes utilize in general the standard constraints described on *[Constraint functions](@extref EnergyModelsBase man-con)*.
 These standard constraints are:
 
 - `constraints_capacity`:
@@ -125,7 +125,7 @@ These standard constraints are:
 The function `constraints_capacity_installed` is also used in [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/stable/) to incorporate the potential for investment.
 Nodes with investments are then no longer constrained by the parameter capacity.
 
-The variable ``\texttt{cap\_inst}`` is declared over all operational periods (see the section on *[Capacity variables](@extref EnergyModelsBase var_cap)* for further explanations).
+The variable ``\texttt{cap\_inst}`` is declared over all operational periods (see the section on *[Capacity variables](@extref EnergyModelsBase man-opt_var-cap)* for further explanations).
 Hence, we use the function ``first(t_{inv})`` to retrieve the installed capacity in the first operational period of a given strategic period ``t_{inv}`` in the function `constraints_opex_fixed`.
 
 The function `constraints_flow_out` is extended with a new method for CO₂ source nodes to allow the inclusion of CO₂:
