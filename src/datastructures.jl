@@ -169,18 +169,16 @@ struct RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
 end
 
 """
-    EMB.outputs(n::CCSRetroFit)
+    EMB.outputs(n::NetworkNodeWithRetrofit)
+    EMB.outputs(n::NetworkNodeWithRetrofit, p::Resource)
 
 When the node is a [`NetworkNodeWithRetrofit`](@ref), it returns the `co2_proxy` resource in
 addition to the keys of the `output` dictionary.
+
+If the resource `p` is specified, it returns the value of `output` resource `p` or 0 if `p`
+is the `co2_proxy` resource.
 """
 EMB.outputs(n::NetworkNodeWithRetrofit) = unique(append!(Resource[n.co2_proxy], keys(n.output)))
-"""
-    EMB.outputs(n::NetworkNodeWithRetrofit, p::Resource)
-
-When the node is a [`NetworkNodeWithRetrofit`](@ref), it returns the value of `output`
-resource `p`. If `p` is the `co2_proxy` resource, it returns 0.
-"""
 EMB.outputs(n::NetworkNodeWithRetrofit, p::Resource) = haskey(n.output, p) ? n.output[p] : 0
 
 """
@@ -217,17 +215,16 @@ end
 
 """
     EMB.inputs(n::CCSRetroFit)
+    EMB.inputs(n::CCSRetroFit, p::Resource)
+
 
 When the node is a [`CCSRetroFit`](@ref), it returns the `co2_proxy` resource in addition to
 the keys of the `input` dictionary.
+
+If the resource `p` is specified, it returns the value of `input` resource `p` or 0 if `p`
+is the `co2_proxy` resource.
 """
 EMB.inputs(n::CCSRetroFit) = unique(append!(Resource[n.co2_proxy], keys(n.input)))
-"""
-    EMB.inputs(n::CCSRetroFit, p::Resource)
-
-When the node is a [`CCSRetroFit`](@ref), it returns the value of `input` resource `p`.
-If `p` is the `co2_proxy` resource, it returns 0.
-"""
 EMB.inputs(n::CCSRetroFit, p::Resource) = haskey(n.input, p) ? n.input[p] : 0
 
 """
