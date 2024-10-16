@@ -11,7 +11,9 @@ function EMB.variables_node(m, 𝒩::Vector{<:CO2Storage}, 𝒯, modeltype::Ener
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
     # Variable for keeping track of the increased storage_level during a
     # strategic period.
-    @variable(m, stor_level_Δ_sp[𝒩, 𝒯ᴵⁿᵛ] >= 0)
+    for t_inv ∈ 𝒯ᴵⁿᵛ, n ∈ 𝒩
+        insertvar!(m[:stor_level_Δ_sp], n, t_inv)
+    end
 end
 
 """
@@ -56,8 +58,11 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     )
 
     # The CO2Storage has no outputs.
-    for t ∈ 𝒯, p ∈ outputs(n)
-        fix(m[:flow_out][n, t, p], 0,; force=true)
+    for t ∈ 𝒯
+        fix(m[:stor_discharge_use][n, t], 0,; force=true)
+        for p ∈ outputs(n)
+            fix(m[:flow_out][n, t, p], 0,; force=true)
+        end
     end
 
     # Bounds for the storage level and storage rate used.

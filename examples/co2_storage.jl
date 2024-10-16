@@ -109,11 +109,8 @@ function process_co2_storage_results(m, case)
     first_op = [first(t_inv) for t_inv ∈ 𝒯ᴵⁿᵛ]
 
     # Storage variables
-    storage_use = JuMP.Containers.rowtable(     # Storage usage in a strategic period
-        value,
-        m[:stor_level_Δ_sp][co2_stor, :]/1e3;
-        header=[:t, :storage_use]
-    )
+    # Storage usage in a strategic period
+    storage_use = [value.(m[:stor_level_Δ_sp][co2_stor, t_inv]) for t_inv ∈ 𝒯ᴵⁿᵛ]./1e3
     storage_level = JuMP.Containers.rowtable(   # Storage level at beginning
         value,
         m[:stor_level][co2_stor, first_op]/1e3;
@@ -123,7 +120,7 @@ function process_co2_storage_results(m, case)
 
     # Set up the individual named tuples as a single named tuple
     table = [(
-            t = repr(con_1.t), storage_use = round(con_1.storage_use; digits=1),
+            t = repr(con_2.t), storage_use = round(con_1; digits=1),
             storage_level = round(con_2.storage_level; digits=1),
         ) for (con_1, con_2) ∈ zip(storage_use, storage_level)
     ]

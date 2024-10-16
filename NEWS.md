@@ -1,5 +1,13 @@
 # Release Notes
 
+## Version 0.7.3 (2024-10-16)
+
+* Minor changes to the documentation and docstrings.
+* Minor rewriting of constraints and fixing variables.
+* Adjusted to [`EnergyModelsBase` v0.8.1](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.8.1):
+  * Use of the function `scale_op_sp`.
+  * Rework based on the introduction of `:stor_level_Δ_sp` in `EnergyModelsBase` as sparse variable.
+
 ## Version 0.7.2 (2024-09-03)
 
 * Dependency increase for `EnergyModelsBase` as the changes do not directly affect `EnergyModelsCO2`.

@@ -57,13 +57,13 @@ function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::Ener
     # Constraint for the change in the level in a given operational period
     @constraint(m, [t ∈ 𝒯],
         m[:stor_level_Δ_op][n, t] ==
-            m[:flow_in][n, t, p_stor] - m[:emissions_node][n, t, p_stor]
+            m[:stor_charge_use][n, t]
     )
 
     # Constraint for the change in the level in a strategic period
     @constraint(m, [t_inv ∈ 𝒯ᴵⁿᵛ],
         m[:stor_level_Δ_sp][n, t_inv] ==
-            sum(m[:stor_level_Δ_op][n, t] * EMB.multiple(t_inv, t) for t ∈ t_inv)
+            sum(m[:stor_level_Δ_op][n, t] * scale_op_sp(t_inv, t) for t ∈ t_inv)
     )
 
     # Set the lower bound for the operational change in the level (:stor_level_Δ_op) to

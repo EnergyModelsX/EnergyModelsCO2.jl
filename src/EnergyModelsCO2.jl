@@ -6,6 +6,7 @@ module EnergyModelsCO2
 
 using EnergyModelsBase
 using JuMP
+using SparseVariables
 using TimeStruct
 
 const EMB = EnergyModelsBase
