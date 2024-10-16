@@ -161,7 +161,7 @@ These standard constraints are:
   This function is only called for specified data of the CO₂ storage node, see above.
 
 !!! info "Implementation of OPEX"
-    The fixed and variable OPEX constribution for the level and the charge capacities are only included if the corresponding *[storage parameters](@extref EnergyModelsBase lib-pub-nodes-stor_par)* have a field `opex_fixed` and `opex_var`, respectively.
+    The fixed and variable OPEX contribution for the level and the charge capacities are only included if the corresponding *[storage parameters](@extref EnergyModelsBase lib-pub-nodes-stor_par)* have a field `opex_fixed` and `opex_var`, respectively.
     Otherwise, they are omitted.
 
 The function `constraints_capacity` is extended with a new method for CO₂ storage nodes to allow for accounting for the upper bound of stored CO₂ in strategic periods.
