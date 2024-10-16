@@ -90,12 +90,13 @@ The variables include:
 - [``\texttt{emissions\_node}``](@extref EnergyModelsBase man-opt_var-emissions)
 
 ``\texttt{stor\_discharge\_inst}`` is not created for `CO2Storage` nodes as we do not specify a `discharge` field.
-The variables ``\texttt{stor\_discharge\_use}``
+The variables ``\texttt{stor\_discharge\_use}`` are created by default in `EnergyModelsBase`.
+They are however fixed to 0 for [`CO2Storage`](@ref) nodes
 
 #### [Additional variables](@id nodes-co2_storage-math-add)
 
 [`CO2Storage`](@ref) nodes have to keep track of the stored CO₂ in each strategic period.
-Hence, a single additional variable is declared through dispatching on the method [`EnergyModelsBase.variables_node()`](@ref):
+Hence, a single additional variable is declared through dispatching on the method [`EnergyModelsBase.variables_node()`](@ref) and utilizing [`SparseVariables`](https://github.com/sintefore/SparseVariables.jl):
 
 - ``\texttt{stor\_level\_Δ\_sp}[n, t_{inv}]``: Stored CO₂ in storage node ``n`` in strategic period ``t_{inv}`` with a typical unit of t/a.\
   The stored CO₂ in each strategic period is a rate specifying how much CO₂ is stored within a given strategic period.
