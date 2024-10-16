@@ -11,7 +11,9 @@ function EMB.variables_node(m, 𝒩::Vector{<:CO2Storage}, 𝒯, modeltype::Ener
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
     # Variable for keeping track of the increased storage_level during a
     # strategic period.
-    @variable(m, stor_level_Δ_sp[𝒩, 𝒯ᴵⁿᵛ] >= 0)
+    for t_inv ∈ 𝒯ᴵⁿᵛ, n ∈ 𝒩
+        insertvar!(m[:stor_level_Δ_sp], n, t_inv)
+    end
 end
 
 """
