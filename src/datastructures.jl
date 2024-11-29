@@ -79,7 +79,6 @@ struct CO2Storage{T} <: Storage{T}
 
     stor_res::ResourceEmit
     input::Dict{<:Resource,<:Real}
-    output::Dict{<:Resource,<:Real}
     data::Array{<:Data}
 
     function CO2Storage(
@@ -96,7 +95,6 @@ struct CO2Storage{T} <: Storage{T}
             level,
             stor_res,
             input,
-            Dict(stor_res => 0),
             data
         )
     end
@@ -118,6 +116,18 @@ function CO2Storage(
     )
 end
 EMB.has_emissions(n::CO2Storage) = true
+EMB.has_output(n::CO2Storage) = false
+
+"""
+    EMB.outputs(n::CO2Storage)
+    EMB.outputs(n::CO2Storage, p::Resource)
+
+When the node is a [`CO2Storage`](@ref), it returns an empty array.
+
+If the resource `p` is specified, it returns a value of 0.
+"""
+EMB.outputs(n::CO2Storage) = Resource[]
+EMB.outputs(n::CO2Storage, p::Resource) = 0
 
 """
     NetworkNodeWithRetrofit <:NetworkNode

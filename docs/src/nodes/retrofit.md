@@ -75,9 +75,9 @@ The standard fields are given as:
       - [`CCSRetroFit`](@ref):\
         The capture rate corresponds to
         1. the fraction captured from the flue gas ([`CaptureFlueGas`](@ref)),
-        2. the fraction captured from the flue gas and the energy input to the unit ([`CaptureEnergyEmissions`](@ref)),
-        3. the fraction captured from the flue gas and the process emissions ([`CaptureProcessEmissions`](@ref)), or
-        4. the fraction captured from the flue gas, the energy input to the unit, and the process emissions ([`CaptureProcessEnergyEmissions`](@ref))
+        2. the fraction captured from the flue gas and the energy input to the unit ([`CaptureEnergyEmissions`](@extref EnergyModelsBase.CaptureEnergyEmissions)),
+        3. the fraction captured from the flue gas and the process emissions ([`CaptureProcessEmissions`](@extref EnergyModelsBase.CaptureProcessEmissions)), or
+        4. the fraction captured from the flue gas, the energy input to the unit, and the process emissions ([`CaptureProcessEnergyEmissions`](@extref EnergyModelsBase.CaptureProcessEnergyEmissions))
 
 ### [Additional fields](@id nodes-CCS_retrofit-fields-new)
 

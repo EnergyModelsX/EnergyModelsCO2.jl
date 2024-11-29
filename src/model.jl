@@ -60,9 +60,6 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     # The CO2Storage has no outputs.
     for t ∈ 𝒯
         fix(m[:stor_discharge_use][n, t], 0,; force=true)
-        for p ∈ outputs(n)
-            fix(m[:flow_out][n, t, p], 0,; force=true)
-        end
     end
 
     # Bounds for the storage level and storage rate used.
