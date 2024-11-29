@@ -1,5 +1,10 @@
 # Release Notes
 
+## Version 0.7.4 (2024-11-29)
+
+* Included changes for `CO2Storage` to not require the definition of variables that are not used.
+* Included check changes from `EnergyModelsBase`.
+
 ## Version 0.7.3 (2024-10-16)
 
 * Minor changes to the documentation and docstrings.
