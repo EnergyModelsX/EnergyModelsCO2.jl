@@ -1,5 +1,10 @@
 # Release Notes
 
+## Version 0.7.5 (2024-11-03)
+
+* Fix of a bug introduced in 0.7.4.
+* Adjusted the tests to identify similar bugs in later stages.
+
 ## Version 0.7.4 (2024-11-29)
 
 * Included changes for `CO2Storage` to not require the definition of variables that are not used.

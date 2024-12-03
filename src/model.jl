@@ -20,6 +20,19 @@ end
     create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
 Set all constraints for a [`CO2Storage`](@ref) node.
+
+It differs from the function for a standard [`RefStorage`](@extref EnergyModelsBase.RefStorage)
+node through modifying the flow to the node and not calling the functions
+[`constraints_flow_in`](@extref EnergyModelsBase.constraints_flow_in) and
+[`constraints_flow_out`](@extref EnergyModelsBase.constraints_flow_out). The former is
+replaced with constraints directly within the function.
+
+# Called constraint functions
+- [`constraints_data`](@extref EnergyModelsBase.constraints_data) for all `node_data(n)`,
+- [`constraints_level`](@extref EnergyModelsBase.constraints_level),
+- [`constraints_capacity`](@extref EnergyModelsBase.constraints_capacity),
+- [`constraints_opex_fixed`](@extref EnergyModelsBase.constraints_opex_fixed), and
+- [`constraints_opex_var`](@extref EnergyModelsBase.constraints_opex_var).
 """
 function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
@@ -48,7 +61,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Constraint for additional required input
     @constraint(m, [t ∈ 𝒯, p ∈ 𝒫ᵃᵈᵈ],
-        m[:flow_in][n, t, p] == m[:stor_charge_use][n, t, p_stor] * inputs(n, p)
+        m[:flow_in][n, t, p] == m[:stor_charge_use][n, t] * inputs(n, p)
     )
 
     # Constraint for storage rate use
@@ -74,6 +87,17 @@ end
     create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
 Set all constraints for a `CCSRetroFit`.
+
+It differs from the function for a standard `NetworkNode` node through modifying the flow
+to the node for the CO₂ proxy resource. The function
+[`constraints_flow_in`](@extref EnergyModelsBase.constraints_flow_in) is hence not called.
+
+# Called constraint functions
+- [`constraints_data`](@extref EnergyModelsBase.constraints_data) for all `node_data(n)`,
+- [`constraints_flow_out`](@extref EnergyModelsBase.constraints_flow_out),
+- [`constraints_capacity`](@extref EnergyModelsBase.constraints_capacity),
+- [`constraints_opex_fixed`](@extref EnergyModelsBase.constraints_opex_fixed), and
+- [`constraints_opex_var`](@extref EnergyModelsBase.constraints_opex_var).
 """
 function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
