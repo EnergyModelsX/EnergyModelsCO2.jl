@@ -15,7 +15,7 @@ function small_graph(T; source_cap = 9)
         FixedProfile(1),
         Dict(CO2 => 1),
     )
-    el_source = CO2Source(
+    el_source = RefSource(
         "source",
         FixedProfile(100),
         FixedProfile(0),
