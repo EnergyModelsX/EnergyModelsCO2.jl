@@ -1,13 +1,13 @@
 
 """
     EMB.constraints_data(
-    m,
-    n::NetworkNodeWithRetrofit,
-    𝒯,
-    𝒫,
-    modeltype::EnergyModel,
-    data::EmissionsData
-)
+        m,
+        n::NetworkNodeWithRetrofit,
+        𝒯,
+        𝒫,
+        modeltype::EnergyModel,
+        data::EmissionsData
+    )
 
 Constraints functions for calculating both the emissions and amount of CO₂ captured in the
 process when CO₂ capture is included as retrofit. It works similar to the approach of

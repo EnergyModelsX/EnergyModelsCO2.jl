@@ -1,8 +1,9 @@
 # Definition of the CO2 resource
+power = ResourceCarrier("power", 1.0)
 CO2 = ResourceEmit("CO2", 1.0)
 
 function small_graph(T; source_cap = 9)
-    products = [CO2]
+    products = [CO2, power]
 
     # Creation of a dictionary with entries of 0. for all resources
     𝒫₀ = Dict(k => 0 for k ∈ products)
@@ -14,17 +15,27 @@ function small_graph(T; source_cap = 9)
         FixedProfile(1),
         Dict(CO2 => 1),
     )
+    el_source = RefSource(
+        "source",
+        FixedProfile(100),
+        FixedProfile(0),
+        FixedProfile(1),
+        Dict(power => 1),
+    )
 
     co2_storage = CO2Storage(
         "storage",
         StorCapOpex(FixedProfile(10), FixedProfile(2), FixedProfile(1)),
         StorCap(FixedProfile(20000)),
         CO2,
-        Dict(CO2 => 1),
+        Dict(CO2 => 1, power => 0.02),
     )
 
-    nodes = [co2_source, co2_storage]
-    links = [Direct("source_stor", co2_source, co2_storage)]
+    nodes = [co2_source, co2_storage, el_source]
+    links = [
+        Direct("source_stor", co2_source, co2_storage),
+        Direct("el_source_stor", el_source, co2_storage)
+    ]
 
     modeltype =
         OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(20)), CO2)
@@ -69,7 +80,7 @@ end
 
     # Test that the source produces with max capacity in all operational periods.
     source_cap = 9
-    @test sum(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T) == length(T)
+    @test all(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T)
 end
 
 @testset "Storage accumulation over strategic periods - SimpleTimes" begin
@@ -102,7 +113,7 @@ end
     end
 
     # Test that the source produces with max capacity in all operational periods.
-    @test sum(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T) == length(T)
+    @test all(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T)
 end
 
 @testset "Storage accumulation over strategic periods - RepresentativePeriods" begin
@@ -147,5 +158,5 @@ end
     end
 
     # Test that the source produces with max capacity in all operational periods.
-    @test sum(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T) == length(T)
+    @test all(value(m[:flow_out][source, t, CO2]) == source_cap for t ∈ T)
 end
