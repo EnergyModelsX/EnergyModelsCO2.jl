@@ -15,10 +15,6 @@ These technologies are
 `RefNetworkNodeRetrofit` and `CCSRetroFit` have to be coupled to each other for proper functioning as they require a proxy resource for CO2.
 Further information can be found in the _[corresponding documentation](https://energymodelsx.github.io/EnergyModelsCO2.jl/stable/)_.
 
-> **Note**:
-> The stable docs are in the current version not working due to a mistake in the deploy.
-> It will be updated in the next release.
-
 ## Usage
 
 The usage of the package is best illustrated through the commented [`examples`](examples).
@@ -30,14 +26,14 @@ If you find `EnergyModelsBase` useful in your work, we kindly request that you c
 
 ```bibtex
 @article{hellemo2024energymodelsx,
-  title={EnergyModelsX: Flexible Energy Systems Modelling with Multiple Dispatch},
-  author={Hellemo, Lars and B{\o}dal, Espen Flo and Holm, Sigmund Eggen and Pinel, Dimitri and Straus, Julian},
-  journal={Journal of Open Source Software},
-  volume={9},
-  number={97},
-  pages={6619},
-  year={2024},
-  doi={https://doi.org/10.21105/joss.06619},
+  title = {EnergyModelsX: Flexible Energy Systems Modelling with Multiple Dispatch},
+  author = {Hellemo, Lars and B{\o}dal, Espen Flo and Holm, Sigmund Eggen and Pinel, Dimitri and Straus, Julian},
+  journal = {Journal of Open Source Software},
+  volume = {9},
+  number = {97},
+  pages = {6619},
+  year = {2024},
+  doi = {https://doi.org/10.21105/joss.06619},
 }
 ```
 
