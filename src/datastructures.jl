@@ -2,7 +2,7 @@
 """
     AccumulatingStrategic <: EMB.Accumulating
 
-`StorageBehavior` which accumulates all inflow witin a strategic period and transfers the
+`StorageBehavior` which accumulates all inflow within a strategic period and transfers the
 level to the next strategic period. This approach is used for [`CO2Storage`](@ref) nodes.
 """
 struct AccumulatingStrategic <: EMB.Accumulating end
