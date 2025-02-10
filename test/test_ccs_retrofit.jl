@@ -53,7 +53,6 @@ function CO2_retrofit(emissions_data; process_unit=nothing)
     )
 
     nodes = [
-        GenAvailability(1, products),
         ng_source,
         process_unit,
         ccs_unit,
@@ -66,7 +65,6 @@ function CO2_retrofit(emissions_data; process_unit=nothing)
         Direct("pu-demand", process_unit, demand)
         Direct("pu-ccs", process_unit, ccs_unit)
         Direct("ccs-co2", ccs_unit, co2_storage)
-        Direct("co2-av", co2_storage, nodes[1])
     ]
 
     modeltype =
@@ -82,9 +80,7 @@ end
 function general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # General tests of the results and that the model producses
@@ -103,9 +99,7 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
@@ -157,9 +151,7 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
@@ -218,9 +210,7 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
@@ -278,9 +268,7 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate
@@ -366,9 +354,7 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    nodes = case[:nodes]
-    process = nodes[3]
-    ccs = nodes[4]
+    process, ccs = case[:nodes][[2,3]]
     T = case[:T]
 
     # Test that the outflow of the proxy is correct based on the capture rate

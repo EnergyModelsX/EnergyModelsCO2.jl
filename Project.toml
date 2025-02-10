@@ -10,7 +10,7 @@ SparseVariables = "2749762c-80ed-4b14-8f33-f0736679b02b"
 TimeStruct = "f9ed5ce0-9f41-4eaa-96da-f38ab8df101c"
 
 [compat]
-EnergyModelsBase = "0.8.3"
+EnergyModelsBase = "0.9"
 JuMP = "1.5"
 TimeStruct = "0.9"
 julia = "1.10"
