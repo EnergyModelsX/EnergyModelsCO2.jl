@@ -70,8 +70,7 @@ function CO2_retrofit(emissions_data; process_unit=nothing)
     modeltype =
         OperationalModel(Dict(CO2 => FixedProfile(60)), Dict(CO2 => FixedProfile(30)), CO2)
 
-    case = Dict(:nodes => nodes, :links => links, :products => products, :T => T)
-
+    case = Case(T, products, [nodes, links], [[get_nodes, get_links]])
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
 
     return m, case, modeltype
@@ -80,8 +79,8 @@ end
 function general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # General tests of the results and that the model producses
     @test termination_status(m) == MOI.OPTIMAL
@@ -99,8 +98,8 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # Test that the outflow of the proxy is correct based on the capture rate
     # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
@@ -151,8 +150,8 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # Test that the outflow of the proxy is correct based on the capture rate
     # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)
@@ -210,8 +209,8 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # Test that the outflow of the proxy is correct based on the capture rate
     # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEmissions)
@@ -268,8 +267,8 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # Test that the outflow of the proxy is correct based on the capture rate
     # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureProcessEnergyEmissions)
@@ -354,8 +353,8 @@ end
     general_tests(m, case, modeltype)
 
     # Extract the input data
-    process, ccs = case[:nodes][[2,3]]
-    T = case[:T]
+    process, ccs = get_nodes(case)[[2,3]]
+    T = get_time_struct(case)
 
     # Test that the outflow of the proxy is correct based on the capture rate
     # - constraints_data(m, n::RefNetworkNodeRetrofit, 𝒯, 𝒫, modeltype, data::CaptureEnergyEmissions)

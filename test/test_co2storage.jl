@@ -39,8 +39,7 @@ function small_graph(T; source_cap = 9)
 
     modeltype =
         OperationalModel(Dict(CO2 => FixedProfile(3)), Dict(CO2 => FixedProfile(20)), CO2)
-
-    case = Dict(:nodes => nodes, :links => links, :products => products, :T => T)
+    case = Case(T, products, [nodes, links], [[get_nodes, get_links]])
     return case, modeltype
 end
 
@@ -51,8 +50,8 @@ end
     case, modeltype = small_graph(T)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
 
-    nodes = case[:nodes]
-    T = case[:T]
+    nodes = get_nodes(case)
+    T = get_time_struct(case)
 
     source = nodes[1]
     storage = nodes[2]
@@ -93,8 +92,8 @@ end
     case, modeltype = small_graph(T, source_cap = source_cap)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
 
-    nodes = case[:nodes]
-    T = case[:T]
+    nodes = get_nodes(case)
+    T = get_time_struct(case)
 
     source = nodes[1]
     storage = nodes[2]
@@ -130,8 +129,8 @@ end
     case, modeltype = small_graph(T, source_cap = source_cap)
     m = EMB.run_model(case, modeltype, HiGHS.Optimizer)
 
-    nodes = case[:nodes]
-    T = case[:T]
+    nodes = get_nodes(case)
+    T = get_time_struct(case)
 
     source = nodes[1]
     storage = nodes[2]

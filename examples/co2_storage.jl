@@ -80,13 +80,8 @@ function generate_co2_storage_example_data()
         Direct("source-storage", nodes[1], nodes[2], Linear())
     ]
 
-    # WIP data structure
-    case = Dict(
-        :nodes => nodes,
-        :links => links,
-        :products => products,
-        :T => T,
-    )
+    # Input data structure
+    case = Case(T, products, [nodes, links], [[get_nodes, get_links]])
     return case, model
 end
 
@@ -102,8 +97,8 @@ Function for processing the results to be represented in the a table afterwards.
 """
 function process_co2_storage_results(m, case)
     # Extract the nodes and the strategic periods from the data
-    co2_stor  = case[:nodes][2]
-    𝒯ᴵⁿᵛ = strategic_periods(case[:T])
+    co2_stor  = get_nodes(case)[2]
+    𝒯ᴵⁿᵛ = strategic_periods(get_time_struct(case))
 
     # Extract the first operational period of each strategic period
     first_op = [first(t_inv) for t_inv ∈ 𝒯ᴵⁿᵛ]
