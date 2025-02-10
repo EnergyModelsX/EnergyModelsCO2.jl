@@ -125,13 +125,8 @@ function generate_co2_retrofit_example_data()
         Direct("ccs-storage", nodes[3], nodes[4], Linear())
     ]
 
-    # WIP data structure
-    case = Dict(
-        :nodes => nodes,
-        :links => links,
-        :products => products,
-        :T => T,
-    )
+    # Input data structure
+    case = Case(T, products, [nodes, links], [[get_nodes, get_links]])
     return case, model
 end
 
@@ -147,8 +142,8 @@ Function for processing the results to be represented in the a table afterwards.
 """
 function process_co2_retrofit_results(m, case)
     # Extract the nodes and the strategic periods from the data
-    ccgt, ccs = case[:nodes][[2,3]]
-    CO2, CO2_proxy, NG, Power = case[:products]
+    ccgt, ccs = get_nodes(case)[[2,3]]
+    CO2, CO2_proxy, NG, Power = get_products(case)
 
     ccgt_out = sort(                    # Outlet CO₂ flow from the CCGT
             JuMP.Containers.rowtable(

@@ -37,12 +37,7 @@ EMB.TEST_ENV = true
             Dict(CO2 => FixedProfile(0)),
             CO2
         )
-        case = Dict(
-                    :T => T,
-                    :nodes => nodes,
-                    :links => links,
-                    :products => resources,
-        )
+        case = Case(T, products, [nodes, links], [[get_nodes, get_links]])
         return create_model(case, model), case, model
     end
 
