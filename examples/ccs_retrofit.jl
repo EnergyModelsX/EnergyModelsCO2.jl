@@ -41,7 +41,7 @@ function generate_co2_retrofit_example_data()
 
     # Variables for the individual entries of the time structure
     op_duration = 2 # Each operational period has a duration of 2 h
-    op_number = 4   # There are in total 5 operational periods in each strategic period
+    op_number = 4   # There are in total 4 operational periods in each strategic period
     operational_periods = SimpleTimes(op_number, op_duration)
 
     # The total time within a strategic period is given by 8760 h
@@ -50,8 +50,8 @@ function generate_co2_retrofit_example_data()
     op_per_strat = 8760
 
     # Creation of the time structure and global data
-    sp_duration = 10 # Each strategic period has a duration of 10 a
-    sp_number = 2   # There are in total 8 strategic periods
+    sp_duration = 10    # Each strategic period has a duration of 10 a
+    sp_number = 2       # There are in total 2 strategic periods
     T = TwoLevel(sp_number, sp_duration, operational_periods; op_per_strat)
 
     # Creation of the model type with global data
