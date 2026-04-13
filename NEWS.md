@@ -1,10 +1,12 @@
 # Release Notes
 
-## Unversioned
+## Version 0.8.0 (2026-04-13)
 
 * Adjusted to [`EnergyModelsBase` v0.10.0](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.10.0):
   * Model worked without adjustments.
   * Adjustments required due to different behavior when investments are included due to the change in [`EnergyModelsInvestments` 0.9](https://github.com/EnergyModelsX/EnergyModelsInvestments.jl/releases/tag/v0.9.0).
+* Removed requirement of `CO2Storage` to use `AccumulatingStrategic` to allow for a simpler application of the receding horizon framework.
+* Reworked the test set of `CO2Storage`.
 
 ## Version 0.7.6 (2025-02-10)
 

@@ -13,9 +13,11 @@ It introduces a new *[storage behavior](@extref EnergyModelsBase lib-pub-nodes-s
 This storage behavior is called [`EnergyModelsCO2.AccumulatingStrategic`](@ref).
 
 !!! info "`StorageBehaviour` for `CO2Storage` nodes"
-    [`CO2Storage`](@ref) nodes utilize an inner constructor for specifying the storage behavior.
-    This means that they can only be created with [`EnergyModelsCO2.AccumulatingStrategic`](@ref).
-    If you plan to include a temporary CO₂ storage node, *e.g.* for storing captured CO₂ for subsequent  utilization, it is best to utilize the [`RefStorage`](@extref EnergyModelsBase.RefStorage) node.
+    [`CO2Storage`](@ref) nodes utilize an outer constructor for specifying the storage behavior.
+    This means that they can be automatically created with [`EnergyModelsCO2.AccumulatingStrategic`](@ref).
+    If you plan to include a temporary CO₂ storage node, *e.g.* for storing captured CO₂ for subsequent utilization, it is best to utilize the [`RefStorage`](@extref EnergyModelsBase.RefStorage) node.
+
+    The application of [`EnergyModelsRecedingHorizon`](https://github.com/EnergyModelsX/EnergyModelsRecedingHorizon.jl) requires you however to specify [`RecedingAccumulating`](https://github.com/EnergyModelsX/EnergyModelsRecedingHorizon.jl/blob/bc8832727c5df81f0f678618058bf524dc5d6987/src/structures/data.jl#L7).
 
 ### [Standard fields](@id nodes-co2_storage-fields-stand)
 
@@ -48,7 +50,7 @@ The standard fields are given as:
   In the current version, it is only relevant for additional investment data when [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/) is used.
 
 !!! danger "The field `output`"
-    CO₂ storage nodes do not allow for the specification of an outlet field.
+    CO₂ storage nodes do not allow for the specification of an output field.
     Their sole intention is to serve as permanent storage nodes.
     Hence, although the field `output` is included in the composite type, it cannot be provided.
 
