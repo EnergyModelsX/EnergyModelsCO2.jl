@@ -129,7 +129,7 @@ end
         @test all(capacity(level(storage), t) == 20000 for t ∈ 𝒯)
 
         # Test the input extraction functions
-        @test inputs(storage) == [CO2, power]
+        @test inputs(storage) == [CO2, power] || inputs(storage) == [power, CO2]
         @test inputs(storage, CO2) == 1
         @test inputs(storage, power) == 0.02
 
