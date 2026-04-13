@@ -41,7 +41,7 @@ The standard fields are given as:
       - [`CCSRetroFit`](@ref):\
         The capacity corresponds to the CO₂ flow rate handling capacity, **not** the CO₂ capture capacity
 - **`opex_var::TimeProfile`**:\
-  The variable operational expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase man-opt_var-cap).
+  The variable operating expenses are based on the capacity utilization through the variable [`:cap_use`](@extref EnergyModelsBase man-opt_var-cap).
   Hence, it is directly related to the specified `output` ratios.
   The variable operating expenses can be provided as `OperationalProfile` as well.
 - **`opex_fixed::TimeProfile`**:\
@@ -98,7 +98,7 @@ with square brackets, while functions are represented as
 
 ``func\_example(index_1, index_2)``
 
-with paranthesis.
+with parantheses.
 
 ### [Variables](@id nodes-CCS_retrofit-math-var)
 
@@ -113,7 +113,7 @@ The variables include:
 - [``\texttt{cap\_inst}``](@extref EnergyModelsBase man-opt_var-cap)
 - [``\texttt{flow\_in}``](@extref EnergyModelsBase man-opt_var-flow)
 - [``\texttt{flow\_out}``](@extref EnergyModelsBase man-opt_var-flow)
-- [``\texttt{emissions\_node}``](@ref EnergyModelsBase man-opt_var-emissions)
+- [``\texttt{emissions\_node}``](@extref EnergyModelsBase man-opt_var-emissions)
 
 #### [Additional variables](@id nodes-CCS_retrofit-math-add)
 
@@ -368,7 +368,6 @@ while the CO₂ outlet flow is given as:
     \end{aligned}
     ```
 
-
 !!! info "data::CaptureProcessEnergyEmissions"
     The total produced CO₂ is calculated through an auxiliary expression as
 
@@ -392,7 +391,6 @@ while the CO₂ outlet flow is given as:
         \sum_{p_{in} \in P^{in}} co2\_int(p_{in}) \times \texttt{flow\_in}[n, t, p_{in}])
     \end{aligned}
     ```
-
 
 #### [Additional constraints](@id nodes-CCS_retrofit-math-con-add)
 

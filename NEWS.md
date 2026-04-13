@@ -1,13 +1,19 @@
 # Release Notes
 
+## Unversioned
+
+* Adjusted to [`EnergyModelsBase` v0.10.0](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.10.0):
+  * Model worked without adjustments.
+  * Adjustments required due to different behavior when investments are included due to the change in [`EnergyModelsInvestments` 0.9](https://github.com/EnergyModelsX/EnergyModelsInvestments.jl/releases/tag/v0.9.0).
+
 ## Version 0.7.6 (2025-02-10)
 
 * Adjusted to [`EnergyModelsBase` v0.9.0](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.9.0):
-  * Increased version nubmer for EMB.
+  * Increased version number for `EMB`.
   * Model worked without adjustments.
   * Adjustments only required for simple understanding of changes.
 
-## Version 0.7.5 (2024-11-03)
+## Version 0.7.5 (2024-12-03)
 
 * Fix of a bug introduced in 0.7.4.
 * Adjusted the tests to identify similar bugs in later stages.
