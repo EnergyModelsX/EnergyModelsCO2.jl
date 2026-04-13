@@ -51,12 +51,12 @@ increase during all strategic periods (sp), *i.e.*, the stored resource can not 
 taken out of the storage.
 
 The initial storage level in a strategic period is set to the storage level at
-the end of the prevoious sp. Note that the increased storage level during a sp
+the end of the previous sp. Note that the increased storage level during a sp
 is multiplied with the length of the sp when the initial storage level for the
 next sp is set.
 
 This is achieved through the parametric input [`AccumulatingStrategic`](@ref). This input
-is not a required input due to the utilization of an inner constructor.
+is not a required input due to the utilization of an outer constructor.
 
 # Fields
 - **`id`** is the name/identifyer of the node.
@@ -80,24 +80,22 @@ struct CO2Storage{T} <: Storage{T}
     stor_res::ResourceEmit
     input::Dict{<:Resource,<:Real}
     data::Array{<:Data}
-
-    function CO2Storage(
-        id::Any,
-        charge::EMB.UnionCapacity,
-        level::EMB.UnionCapacity,
-        stor_res::ResourceEmit,
-        input::Dict{<:Resource,<:Real},
-        data::Array{<:Data},
+end
+function CO2Storage{T}(
+    id,
+    charge::EMB.UnionCapacity,
+    level::EMB.UnionCapacity,
+    stor_res::Resource,
+    input::Dict{<:Resource,<:Real},
+) where {T}
+    return CO2Storage{T}(
+        id,
+        charge,
+        level,
+        stor_res,
+        input,
+        Data[],
     )
-        new{AccumulatingStrategic}(
-            id,
-            charge,
-            level,
-            stor_res,
-            input,
-            data
-        )
-    end
 end
 function CO2Storage(
     id,
@@ -105,14 +103,15 @@ function CO2Storage(
     level::EMB.UnionCapacity,
     stor_res::Resource,
     input::Dict{<:Resource,<:Real},
+    data=Data[],
 )
-    return CO2Storage(
+    return CO2Storage{AccumulatingStrategic}(
         id,
         charge,
         level,
         stor_res,
         input,
-        Data[],
+        data,
     )
 end
 EMB.has_emissions(n::CO2Storage) = true
