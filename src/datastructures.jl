@@ -1,11 +1,11 @@
 
 """
-    AccumulatingStrategic <: EMB.Accumulating
+    AccumulatingStrategic <: Accumulating
 
 `StorageBehavior` which accumulates all inflow within a strategic period and transfers the
 level to the next strategic period. This approach is used for [`CO2Storage`](@ref) nodes.
 """
-struct AccumulatingStrategic <: EMB.Accumulating end
+struct AccumulatingStrategic <: Accumulating end
 
 """
     CO2Source <: Source
@@ -41,14 +41,14 @@ function CO2Source(
 end
 
 """
-    CO2Storage{T} <: Storage{T}
+    CO2Storage{T<:Accumulating} <: Storage{T}
 
 This node has an installed injection rate capacity through `charge` and a storage capacity
 `level`.
 
 The storage level (accountet by the optimization variable `stor_level`) will
 increase during all strategic periods (sp), *i.e.*, the stored resource can not be
-taken out of the storage.
+taken out of the storage. It requires hence to use an `Accumulating` `StorageBehavior`.
 
 The initial storage level in a strategic period is set to the storage level at
 the end of the previous sp. Note that the increased storage level during a sp
@@ -71,7 +71,7 @@ is not a required input due to the utilization of an outer constructor.
 - **`data::Array{<:Data}`** is the additional data (e.g. for investments). The field `data`
   is conditional through usage of a constructor.
 """
-struct CO2Storage{T} <: Storage{T}
+struct CO2Storage{T<:Accumulating} <: Storage{T}
     id::Any
 
     charge::EMB.UnionCapacity

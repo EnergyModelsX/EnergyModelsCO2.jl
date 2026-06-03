@@ -52,8 +52,8 @@ EMB.TEST_ENV = true
 
 end
 
-# Test that the fields of a CO2Storage are correctly checked
-# - EMB.check_node(n::CO2Storage, 𝒯, modeltype::EnergyModel, check_timeprofiles::Bool)
+# Test that the fields of a Storage are correctly checked
+# - EMB.check_node_default(n::Storage, 𝒯, modeltype::EnergyModel, check_timeprofiles::Bool)
 @testset "Test checks - CO2Storage" begin
 
     # Resources used in the checks
@@ -64,14 +64,13 @@ end
     # Simple graph for testing the individual checks
     function simple_graph(;
         stor_res = CO2,
-        stor_behavior = EMC.AccumulatingStrategic,
     )
         products = [CO2, power]
         ops = SimpleTimes(5, 2)
         T = TwoLevel(2, 2, ops; op_per_strat=10)
 
         nodes = [
-            CO2Storage{stor_behavior}(
+            CO2Storage(
                 "storage",
                 StorCapOpex(FixedProfile(10), FixedProfile(2), FixedProfile(1)),
                 StorCap(FixedProfile(10)),
@@ -91,9 +90,6 @@ end
 
     # Test that `check_node_default` is correctly called
     @test_throws AssertionError simple_graph(;stor_res=CO2_2)
-
-    # Test that a wrong fixed data is caught by the checks.
-    @test_throws AssertionError simple_graph(;stor_behavior=CyclicStrategic)
 end
 
 # Set the global again to false
