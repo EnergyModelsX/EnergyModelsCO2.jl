@@ -22,7 +22,7 @@ analysis.
 """
 function EMB.previous_level(
     m,
-    n::CO2Storage,
+    n::CO2Storage{AccumulatingStrategic},
     prev_pers::PreviousPeriods{Nothing,Nothing,Nothing},
     cyclic_pers::CyclicPeriods,
     modeltype::EnergyModel,
@@ -38,7 +38,7 @@ strategic periods.
 """
 function EMB.previous_level(
     m,
-    n::CO2Storage,
+    n::CO2Storage{AccumulatingStrategic},
     prev_pers::PreviousPeriods{<:TS.AbstractStrategicPeriod,Nothing,Nothing},
     cyclic_pers::CyclicPeriods,
     modeltype::EnergyModel,

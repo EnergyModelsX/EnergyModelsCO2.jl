@@ -3,6 +3,7 @@
 ## Unversioned
 
 * Added a check for using the correct `StorageBehavior` in `CO2Storage` when not utilizing the constructor.
+* Make the functions `previous_level` more restrictive on the `StorageBehavior` to allow for using other `Accumulating` behaviors.
 
 ## Version 0.8.0 (2026-04-13)
 
