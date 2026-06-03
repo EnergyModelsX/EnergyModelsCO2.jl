@@ -1,5 +1,9 @@
 # Release Notes
 
+## Unversioned
+
+* Added a check for using the correct `StorageBehavior` in `CO2Storage` when not utilizing the constructor.
+
 ## Version 0.8.0 (2026-04-13)
 
 * Adjusted to [`EnergyModelsBase` v0.10.0](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.10.0):
