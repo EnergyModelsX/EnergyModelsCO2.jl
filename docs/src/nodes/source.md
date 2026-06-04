@@ -34,7 +34,7 @@ The standard fields are given as:
   In the case of a CO₂ source, `output` should always include *CO₂*.
   It is also possible to include other resources which are produced with a given correlation with CO₂.\
   All values have to be non-negative.
-- **`data::Vector{Data}`**:\
+- **`data::Vector{ExtensionData}`**:\
   An entry for providing additional data to the model.
   In the current version, it is only relevant for additional investment data when [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/) is used or for additional emission data through [`EmissionsProcess`](@extref EnergyModelsBase.EmissionsProcess).
   The latter would correspond to uncaptured CO₂ that should be included in the analyses.
@@ -133,7 +133,7 @@ These standard constraints are:
       The function [``scale\_op\_sp(t_{inv}, t)``](@extref EnergyModelsBase.scale_op_sp) calculates the scaling factor between operational and strategic periods.
       It also takes into account potential operational scenarios and their probability as well as representative periods.
 
-- `constraints_data`:\
+- `constraints_ext_data`:\
   This function is only called for specified data of the CO₂ source, see above.
 
 The function `constraints_flow_out` is extended with a new method for CO₂ source nodes to allow the inclusion of CO₂:

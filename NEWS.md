@@ -1,7 +1,9 @@
 # Release Notes
 
-## Unversioned
+## Version 0.9.0 (2026-06-04)
 
+* Renamed `Data` to `ExtensionData` and `constraints_data` to `constraints_ext_data` as introduced in [`EnergyModelsBase` v0.9.1](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.9.1).
+  This simplifies future maintainability.
 * Made the parametric composite type `CO2Storage` to require an `Accumulating` `StorageBehavior`.
 * Made the functions `previous_level` more restrictive on the `StorageBehavior` to allow for using other `Accumulating` behaviors.
 
@@ -117,7 +119,8 @@
 ### Switch to `TimeStruct`
 
 * Switched the time structure representation to `TimeStruct`.
-* `TimeStruct` is implemented with only the basis features that were available in `TimesStructures`. This implies that neither operational nor strategic uncertainty is included in the model.
+* `TimeStruct` is implemented with only the basis features that were available in `TimesStructures`.
+  This implies that neither operational nor strategic uncertainty is included in the model.
 
 ## Version 0.2.0 (2023-05-30)
 

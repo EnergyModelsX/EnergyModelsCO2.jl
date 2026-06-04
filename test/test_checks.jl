@@ -14,7 +14,7 @@ EMB.TEST_ENV = true
         cap = FixedProfile(10),
         opex_fixed = FixedProfile(0),
         output = Dict(CO2 => 1),
-        data = Data[],
+        data = ExtensionData[],
 
     )
         products = [CO2]
@@ -48,7 +48,7 @@ EMB.TEST_ENV = true
     @test_throws AssertionError simple_graph(;output = Dict(CO2 => 1, Power => -5))
 
     # Test that a wrong fixed data is caught by the checks.
-    @test_throws AssertionError simple_graph(;data=Data[CaptureEnergyEmissions(0.9)])
+    @test_throws AssertionError simple_graph(;data=ExtensionData[CaptureEnergyEmissions(0.9)])
 
 end
 

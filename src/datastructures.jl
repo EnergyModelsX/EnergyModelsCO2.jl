@@ -19,7 +19,7 @@ is that is allows for CO₂ as outlet.
 - **`opex_var::TimeProfile`** is the variational operational costs per energy unit produced.
 - **`opex_fixed::TimeProfile`** is the fixed operational costs.
 - **`output::Dict{<:Resource, <:Real}`** are the generated `Resource`s with conversion value `Real`.
-- **`data::Array{<:Data}`** is the additional data (e.g. for investments). The field `data`
+- **`data::Array{<:ExtensionData}`** is the additional data (e.g. for investments). The field `data`
   is conditional through usage of a constructor.
 """
 struct CO2Source <: Source
@@ -28,7 +28,7 @@ struct CO2Source <: Source
     opex_var::TimeProfile
     opex_fixed::TimeProfile
     output::Dict{<:Resource,<:Real}
-    data::Array{<:Data}
+    data::Array{<:ExtensionData}
 end
 function CO2Source(
     id::Any,
@@ -37,7 +37,7 @@ function CO2Source(
     opex_fixed::TimeProfile,
     output::Dict{<:Resource,<:Real},
 )
-    return CO2Source(id, cap, opex_var, opex_fixed, output, Data[])
+    return CO2Source(id, cap, opex_var, opex_fixed, output, ExtensionData[])
 end
 
 """
@@ -68,7 +68,7 @@ is not a required input due to the utilization of an outer constructor.
   fixed OPEX.
 - **`stor_res::Resource`** is the stored `Resource`.
 - **`input::Dict{<:Resource, <:Real}`** are the input `Resource`s with conversion value `Real`.
-- **`data::Array{<:Data}`** is the additional data (e.g. for investments). The field `data`
+- **`data::Array{<:ExtensionData}`** is the additional data (e.g. for investments). The field `data`
   is conditional through usage of a constructor.
 """
 struct CO2Storage{T<:Accumulating} <: Storage{T}
@@ -79,7 +79,7 @@ struct CO2Storage{T<:Accumulating} <: Storage{T}
 
     stor_res::ResourceEmit
     input::Dict{<:Resource,<:Real}
-    data::Array{<:Data}
+    data::Array{<:ExtensionData}
 end
 function CO2Storage{T}(
     id,
@@ -94,7 +94,7 @@ function CO2Storage{T}(
         level,
         stor_res,
         input,
-        Data[],
+        ExtensionData[],
     )
 end
 function CO2Storage(
@@ -103,7 +103,7 @@ function CO2Storage(
     level::EMB.UnionCapacity,
     stor_res::Resource,
     input::Dict{<:Resource,<:Real},
-    data=Data[],
+    data=ExtensionData[],
 )
     return CO2Storage{AccumulatingStrategic}(
         id,
@@ -164,7 +164,7 @@ The `co2_proxy` does not have to be specified as `output` resource.
   `co2_proxy` is required to be included to be available to have CO₂ capture applied properly.
 - **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
   the CO₂ flow from the `RefNetworkNodeRetrofit` to the `CCSRetroFit` node.
-- **`data::Array{<:Data}`** is the additional data (e.g. for investments).
+- **`data::Array{<:ExtensionData}`** is the additional data (e.g. for investments).
 """
 struct RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
     id::Any
@@ -174,7 +174,7 @@ struct RefNetworkNodeRetrofit <: NetworkNodeWithRetrofit
     input::Dict{<:Resource,<:Real}
     output::Dict{<:Resource,<:Real}
     co2_proxy::Resource
-    data::Array{<:Data}
+    data::Array{<:ExtensionData}
 end
 
 """
@@ -209,7 +209,7 @@ The `co2_proxy` does not have to be specified as `input` resource.
   properly.
 - **`co2_proxy::Resource`** is the instance of the `Resource` used for calculating internally
   the CO₂ flow from the `RefNetworkNodeRetrofit` to the `CCSRetroFit` node.
-- **`data::Array{<:Data}`** is the additional data (e.g. for investments).
+- **`data::Array{<:ExtensionData}`** is the additional data (e.g. for investments).
 """
 struct CCSRetroFit <: NetworkNode
     id::Any
@@ -219,7 +219,7 @@ struct CCSRetroFit <: NetworkNode
     input::Dict{<:Resource,<:Real}
     output::Dict{<:Resource,<:Real}
     co2_proxy::Resource
-    data::Array{<:Data}
+    data::Array{<:ExtensionData}
 end
 
 """

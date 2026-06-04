@@ -29,7 +29,7 @@ CCSRetroFit
 NetworkCCSRetrofit
 ```
 
-## [Data types](@id lib-pub-data)
+## [ExtensionData types](@id lib-pub-data)
 
 ### [`CaptureData` for `CCSRetrofit`](@id lib-pub-data-em_data)
 

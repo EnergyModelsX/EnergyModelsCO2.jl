@@ -28,7 +28,7 @@ node through modifying the flow to the node and not calling the functions
 replaced with constraints directly within the function.
 
 # Called constraint functions
-- [`constraints_data`](@extref EnergyModelsBase.constraints_data) for all `node_data(n)`,
+- [`constraints_ext_data`](@extref EnergyModelsBase.constraints_ext_data) for all `node_data(n)`,
 - [`constraints_level`](@extref EnergyModelsBase.constraints_level),
 - [`constraints_capacity`](@extref EnergyModelsBase.constraints_capacity),
 - [`constraints_opex_fixed`](@extref EnergyModelsBase.constraints_opex_fixed), and
@@ -44,7 +44,7 @@ function EMB.create_node(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Iterate through all data and set up the constraints corresponding to the data
     for data ∈ node_data(n)
-        constraints_data(m, n, 𝒯, 𝒫, modeltype, data)
+        constraints_ext_data(m, n, 𝒯, 𝒫, modeltype, data)
     end
 
     # Set the lower bound for the CO2 emissions in the storage node (:emissions_node)
@@ -93,7 +93,7 @@ to the node for the CO₂ proxy resource. The function
 [`constraints_flow_in`](@extref EnergyModelsBase.constraints_flow_in) is hence not called.
 
 # Called constraint functions
-- [`constraints_data`](@extref EnergyModelsBase.constraints_data) for all `node_data(n)`,
+- [`constraints_ext_data`](@extref EnergyModelsBase.constraints_ext_data) for all `node_data(n)`,
 - [`constraints_flow_out`](@extref EnergyModelsBase.constraints_flow_out),
 - [`constraints_capacity`](@extref EnergyModelsBase.constraints_capacity),
 - [`constraints_opex_fixed`](@extref EnergyModelsBase.constraints_opex_fixed), and
@@ -108,11 +108,11 @@ function EMB.create_node(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel)
 
     # Iterate through all data and set up the constraints corresponding to the data
     for data ∈ node_data(n)
-        constraints_data(m, n, 𝒯, 𝒫, modeltype, data)
+        constraints_ext_data(m, n, 𝒯, 𝒫, modeltype, data)
     end
 
     # Inlet constraints for all other resources
-    # The value for `CO2_proxy` is calculated in `constraints_data`.
+    # The value for `CO2_proxy` is calculated in `constraints_ext_data`.
     @constraint(m, [t ∈ 𝒯, p ∈ 𝒫ⁱⁿ],
         m[:flow_in][n, t, p] == m[:cap_use][n, t] * inputs(n, p)
     )
