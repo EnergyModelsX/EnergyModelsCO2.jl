@@ -3,7 +3,7 @@
 
 Function for creating the constraint on the outlet flow from `CO2Source`.
 The standard `constraints_flow_out` function does not allow CO₂ as an outlet flow as the
-CO₂ outlet flow is specified in the `constraints_data` function to implement CO₂ capture.
+CO₂ outlet flow is specified in the `constraints_ext_data` function to implement CO₂ capture.
 """
 function EMB.constraints_flow_out(m, n::CO2Source, 𝒯::TimeStructure, modeltype::EnergyModel)
     # Declaration of the required subsets, excluding CO2, if specified
@@ -52,7 +52,6 @@ Function for creating the Δ constraint for the level of a reference storage nod
 function EMB.constraints_level_aux(m, n::CO2Storage, 𝒯, 𝒫, modeltype::EnergyModel)
     # Declaration of the required subsets
     𝒯ᴵⁿᵛ = strategic_periods(𝒯)
-    p_stor = storage_resource(n)
 
     # Constraint for the change in the level in a given operational period
     @constraint(m, [t ∈ 𝒯],

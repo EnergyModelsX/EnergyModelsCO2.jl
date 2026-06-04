@@ -64,7 +64,7 @@ The standard fields are given as:
         The CO₂ proxy resource is automatically included in the `input` dictionary through providing additional methods to `EMB.inputs`.
         Requires the incorporation of the  CO₂ resource in the `output` dictionary, although the exact value is not relevant.
         It is furthermore possible to specify additional reenergy required for capturing CO₂ using a conversion factor (*e.g.*, MWh/t CO₂).
-- **`data::Vector{Data}`**:\
+- **`data::Vector{ExtensionData}`**:\
   An entry for providing additional data to the model.
   The `data` vector must include [`CaptureData`](@extref EnergyModelsBase.CaptureData) for both [`RefNetworkNodeRetrofit`](@ref) and [`CCSRetroFit`](@ref).
   It can include additional investment data when [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/) is used.
@@ -185,12 +185,12 @@ These standard constraints are:
       The function [``scale\_op\_sp(t_{inv}, t)``](@extref EnergyModelsBase.scale_op_sp) calculates the scaling factor between operational and strategic periods.
       It also takes into account potential operational scenarios and their probability as well as representative periods.
 
-- `constraints_data`:\
+- `constraints_ext_data`:\
   This function is only called for specified data of the nodes, see above.
   This function is extended with multiple methods for both `CCSRetroFit` and `RefNetworkNodeRetrofit`.
   The individual methods are explained below.
 
-The outlet flow constraint for a [`RefNetworkNodeRetrofit`](@ref) node is requires introducing new methods for the function `constraints_flow_out` as the outlet flow of the CO₂ proxy is calculated in the function `constraints_data` as outlined in *[Standard constraints](@ref nodes-CCS_retrofit-math-con-stand)*.
+The outlet flow constraint for a [`RefNetworkNodeRetrofit`](@ref) node is requires introducing new methods for the function `constraints_flow_out` as the outlet flow of the CO₂ proxy is calculated in the function `constraints_ext_data` as outlined in *[Standard constraints](@ref nodes-CCS_retrofit-math-con-stand)*.
 This constraint is given by:
 
 ```math
@@ -199,7 +199,7 @@ outputs(n, p) \times \texttt{cap\_use}[n, t]
 \qquad \forall p \in outputs(n) \setminus \{co2\_proxy(n)\}
 ```
 
-The introduction of the CO₂ capture unit as retrofit option requires introducing new methods for the function `constraints_data` for all [`CaptureData`](@extref EnergyModelsBase.CaptureData) as described on *[Data functions](@extref EnergyModelsBase man-data_fun-emissions)*.
+The introduction of the CO₂ capture unit as retrofit option requires introducing new methods for the function `constraints_ext_data` for all [`CaptureData`](@extref EnergyModelsBase.CaptureData) as described on *[ExtensionData functions](@extref EnergyModelsBase man-data_fun-emissions)*.
 In all methods, the process emissions of the other [`ResourceEmit`](@extref EnergyModelsBase.ResourceEmit)s, that is all emissions resources except for CO₂, are calculated as
 
 ```math
@@ -396,7 +396,7 @@ while the CO₂ outlet flow is given as:
 
 ##### [Constraints calculated in `create_node`](@id nodes-CCS_retrofit-math-con-add-node)
 
-The inlet flow constraint for a [`CCSRetroFit`](@ref) node is calculated separately as the inlet flow of the CO₂ proxy is calculated in the function `constraints_data` as outlined in *[Standard constraints](@ref nodes-CCS_retrofit-math-con-stand)*.
+The inlet flow constraint for a [`CCSRetroFit`](@ref) node is calculated separately as the inlet flow of the CO₂ proxy is calculated in the function `constraints_ext_data` as outlined in *[Standard constraints](@ref nodes-CCS_retrofit-math-con-stand)*.
 This constraint is given by:
 
 ```math

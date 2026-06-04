@@ -46,7 +46,7 @@ The standard fields are given as:
   It is also possible to include other resources which are required with a given correlation to the stored CO₂.
   One example would be *Power* in the case of electricity requirements for storing CO₂.\
   All values have to be non-negative.
-- **`data::Vector{Data}`**:\
+- **`data::Vector{ExtensionData}`**:\
   An entry for providing additional data to the model.
   In the current version, it is only relevant for additional investment data when [`EnergyModelsInvestments`](https://energymodelsx.github.io/EnergyModelsInvestments.jl/) is used.
 
@@ -161,7 +161,7 @@ These standard constraints are:
       The function [``scale\_op\_sp(t_{inv}, t)``](@extref EnergyModelsBase.scale_op_sp) calculates the scaling factor between operational and strategic periods.
       It also takes into account potential operational scenarios and their probability as well as representative periods.
 
-- `constraints_data`:\
+- `constraints_ext_data`:\
   This function is only called for specified data of the CO₂ storage node, see above.
 
 !!! info "Implementation of OPEX"

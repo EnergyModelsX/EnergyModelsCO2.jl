@@ -8,7 +8,7 @@
         stor_res::ResourceCarrier,
         input::Dict{<:Resource,<:Real},
         output::Dict{<:Resource,<:Real},
-        data::Array{<:Data},
+        data::Array{<:ExtensionData},
     )
 
 Legacy constructor for a `CO2Storage`.
@@ -26,7 +26,7 @@ function CO2Storage(
     stor_res::Resource,
     input::Dict{<:Resource,<:Real},
     output::Dict{<:Resource,<:Real},
-    data::Array{<:Data},
+    data::Array{<:ExtensionData},
 )
     @warn(
         "The used implementation of a `CO2Storage` will be discontinued in the near future.\n" *
@@ -55,7 +55,7 @@ function CO2Storage(
     opex_fixed::TimeProfile,
     stor_res::Resource,
     input::Dict{<:Resource,<:Real},
-    data::Array{<:Data},
+    data::Array{<:ExtensionData},
 )
     @warn(
         "The used implementation of a `CO2Storage` will be discontinued in the near future.\n" *

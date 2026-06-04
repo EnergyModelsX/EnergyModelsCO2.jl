@@ -78,7 +78,7 @@ function generate_co2_retrofit_example_data()
             # Line above: CO2_proxy does not have to be specified as we add a method to
             # `EMB.outputs`
             CO2_proxy,                  # Instance of the `CO2_proxy`
-            Data[CaptureEnergyEmissions(1.0)], # Capture data for the node.
+            ExtensionData[CaptureEnergyEmissions(1.0)], # Capture data for the node.
             # All energy emissions are captured
         ),
         CCSRetroFit(
@@ -92,7 +92,7 @@ function generate_co2_retrofit_example_data()
             # Line above: CO2 is required as input for variable definition, but the
             # value does not matter
             CO2_proxy,                  # Instance of the `CO2_proxy`
-            Data[CaptureEnergyEmissions(0.9)], # Capture data for the node.
+            ExtensionData[CaptureEnergyEmissions(0.9)], # Capture data for the node.
             # All energy emission from the energy to the `CCSRetroFit` are captured.
         ),
         CO2Storage(

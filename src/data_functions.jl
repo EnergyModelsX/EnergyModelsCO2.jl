@@ -1,6 +1,6 @@
 
 """
-    EMB.constraints_data(
+    EMB.constraints_ext_data(
         m,
         n::NetworkNodeWithRetrofit,
         𝒯,
@@ -16,7 +16,7 @@ process when CO₂ capture is included as retrofit. It works similar to the appr
 The functions are updated for a [`NetworkNodeWithRetrofit`](@ref)-node as the output is the
 CO₂ proxy and not CO₂.
 """
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::NetworkNodeWithRetrofit,
     𝒯,
@@ -51,7 +51,7 @@ function EMB.constraints_data(
     # Constraint for the outlet of the CO2 proxy
     @constraint(m, [t ∈ 𝒯], m[:flow_out][n, t, CO2_proxy] == CO2_tot[t] * co2_capture(data))
 end
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::NetworkNodeWithRetrofit,
     𝒯,
@@ -87,7 +87,7 @@ function EMB.constraints_data(
     # Constraint for the outlet of the CO2 proxy
     @constraint(m, [t ∈ 𝒯], m[:flow_out][n, t, CO2_proxy] == CO2_tot[t] * co2_capture(data))
 end
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::NetworkNodeWithRetrofit,
     𝒯,
@@ -125,7 +125,7 @@ function EMB.constraints_data(
 end
 
 """
-    EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::EmissionsData)
+    EMB.constraints_ext_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::EmissionsData)
 
 Constraints functions for calculating both the emissions and amount of CO₂ captured in the
 CO₂ capture unit.
@@ -143,7 +143,7 @@ There exist several configurations for incorporation of CO₂ capture:
 The functions are updated for a `CCSRetroFit`-node as CO₂ emissions require a different
 calculation due to the inclusion of the CO₂ proxy resource for the flue gas.
 """
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::CCSRetroFit,
     𝒯,
@@ -195,7 +195,7 @@ function EMB.constraints_data(
             )
     )
 end
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::CCSRetroFit,
     𝒯,
@@ -246,7 +246,7 @@ function EMB.constraints_data(
             )
     )
 end
-function EMB.constraints_data(
+function EMB.constraints_ext_data(
     m,
     n::CCSRetroFit,
     𝒯,
@@ -296,7 +296,7 @@ function EMB.constraints_data(
             )
     )
 end
-function EMB.constraints_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::CaptureFlueGas)
+function EMB.constraints_ext_data(m, n::CCSRetroFit, 𝒯, 𝒫, modeltype::EnergyModel, data::CaptureFlueGas)
 
     # Declaration of the required subsets.
     CO2 = co2_instance(modeltype)
