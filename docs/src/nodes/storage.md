@@ -11,10 +11,11 @@ Hence, it is necessary to include a specific CO₂ storage node
 The [`CO2Storage`](@ref) node is similar to a [`RefStorage`](@extref EnergyModelsBase.RefStorage) with minor modifications to the implemented constraints.
 It introduces a new *[storage behavior](@extref EnergyModelsBase lib-pub-nodes-stor_behav)* to accomodate for the implementation of coupling the storage level balances between different strategic periods.
 This storage behavior is called [`EnergyModelsCO2.AccumulatingStrategic`](@ref).
+The [`CO2Storage`](@ref) node furthermore does not include an outflow.
 
 !!! info "`StorageBehaviour` for `CO2Storage` nodes"
     [`CO2Storage`](@ref) nodes utilize an outer constructor for specifying the storage behavior.
-    This means that they can be automatically created with [`EnergyModelsCO2.AccumulatingStrategic`](@ref).
+    This means that they can be automatically created with [`EnergyModelsCO2.AccumulatingStrategic`](@ref) without specifying it explicitly.
     If you plan to include a temporary CO₂ storage node, *e.g.* for storing captured CO₂ for subsequent utilization, it is best to utilize the [`RefStorage`](@extref EnergyModelsBase.RefStorage) node.
 
     The application of [`EnergyModelsRecedingHorizon`](https://github.com/EnergyModelsX/EnergyModelsRecedingHorizon.jl) requires you however to specify [`RecedingAccumulating`](https://github.com/EnergyModelsX/EnergyModelsRecedingHorizon.jl/blob/bc8832727c5df81f0f678618058bf524dc5d6987/src/structures/data.jl#L7).
@@ -302,4 +303,4 @@ In the case of CO₂ storage node, we can distinguish the following cases:
     prev\_level = \texttt{stor\_level}[n, t_{prev}]
    ```
 
-Cases 1 and 2 are implemented within `EnergyModelsCO2` for `CO2Storage` nodes while cases 3 and 4 are implemented in `EnergyModelsBase`.
+Cases 1 and 2 are implemented within `EnergyModelsCO2` for `CO2Storage{AccumulatingStrategic}` nodes while cases 3 and 4 are implemented in `EnergyModelsBase`.

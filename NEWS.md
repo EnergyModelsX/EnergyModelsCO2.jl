@@ -1,5 +1,10 @@
 # Release Notes
 
+## Unversioned
+
+* Made the parametric composite type `CO2Storage` to require an `Accumulating` `StorageBehavior`.
+* Made the functions `previous_level` more restrictive on the `StorageBehavior` to allow for using other `Accumulating` behaviors.
+
 ## Version 0.8.0 (2026-04-13)
 
 * Adjusted to [`EnergyModelsBase` v0.10.0](https://github.com/EnergyModelsX/EnergyModelsBase.jl/releases/tag/v0.10.0):
